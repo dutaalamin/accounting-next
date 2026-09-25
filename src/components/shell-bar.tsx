@@ -49,22 +49,22 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
     href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
 
   return (
-    <aside className="flex w-[264px] shrink-0 flex-col bg-gradient-to-b from-[#1e1b4b] to-[#2e1065]">
+    <aside className="flex w-[264px] shrink-0 flex-col bg-[#14161c]">
       {/* Brand */}
       <div className="flex h-[76px] items-center gap-3 px-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 text-sm font-bold text-white shadow-lg shadow-violet-900/40">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
           A
         </div>
         <div className="leading-tight">
           <p className="text-sm font-semibold text-white">Accounting</p>
-          <p className="text-[11px] text-indigo-300/70">Financial Suite</p>
+          <p className="text-[11px] text-white/40">Financial Suite</p>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-2">
         {NAV.map((section) => (
           <div key={section.group} className="mb-6">
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-indigo-300/50">
+            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
               {section.group}
             </p>
             <ul className="space-y-1">
@@ -78,17 +78,17 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
                         active
                           ? "bg-white/[0.12] font-medium text-white shadow-sm"
-                          : "text-indigo-200/70 hover:bg-white/[0.06] hover:text-white"
+                          : "text-white/55 hover:bg-white/[0.06] hover:text-white"
                       }`}
                     >
                       <Icon
                         size={18}
                         strokeWidth={active ? 2.2 : 1.9}
-                        className={active ? "text-indigo-300" : "text-indigo-300/60 group-hover:text-indigo-200"}
+                        className={active ? "text-white" : "text-white/45 group-hover:text-white/75"}
                       />
                       {item.label}
                       {active && (
-                        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-300" />
+                        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-white/70" />
                       )}
                     </Link>
                   </li>
@@ -102,18 +102,18 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
       {/* User */}
       <div className="border-t border-white/10 p-3">
         <div className="flex items-center gap-3 rounded-xl bg-white/[0.06] p-2.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-400 to-violet-500 text-xs font-semibold text-white">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xs font-semibold text-white">
             {userName.slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1 leading-tight">
             <p className="truncate text-xs font-semibold text-white">{userName}</p>
-            <p className="text-[10px] uppercase tracking-wide text-indigo-300/60">{role}</p>
+            <p className="text-[10px] uppercase tracking-wide text-white/40">{role}</p>
           </div>
           <form action={logout}>
             <button
               type="submit"
               title="Keluar"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-indigo-200/70 transition hover:bg-white/10 hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
             >
               <LogOut size={15} />
             </button>
