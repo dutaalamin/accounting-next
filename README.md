@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Accounting (Next.js)
 
-## Getting Started
+Versi **Next.js** dari aplikasi akuntansi — tanpa Laravel. Port setia dari
+project `../accounting` (Laravel + Filament).
 
-First, run the development server:
+## Stack
+
+| Bagian | Teknologi |
+|---|---|
+| Framework | Next.js 16 (App Router) + React 19 |
+| Bahasa | TypeScript |
+| Database | PostgreSQL (driver `pg`) |
+| ORM | Drizzle ORM |
+| Styling | Tailwind CSS v4 |
+| Auth | JWT di cookie HttpOnly (`jose`) + bcrypt |
+| Test | Vitest |
+
+## Fitur (tahap MVP)
+
+- Login / logout dengan role (admin, staff)
+- CRUD akun (Chart of Accounts)
+- Input jurnal umum (double-entry) + validasi balance
+- 4 laporan: Neraca, Laba Rugi, Arus Kas, Buku Besar
+
+## Menjalankan
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Pastikan PostgreSQL jalan (default port 5432)
+#    DATABASE_URL ada di .env.local
+
+# 2. Install dependency
+npm install
+
+# 3. Buat tabel + seed COA & admin
+npm run db:setup
+
+# 4. Jalankan
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Login: `admin@admin.com` / `password`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Perintah lain
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test             # jalankan unit test logika akuntansi
+npm run build        # build produksi
+```
 
-## Learn More
+## Struktur
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    (auth)/login/        # halaman login + server action
+    (app)/               # area butuh login (sidebar + header)
+      dashboard/         # ringkasan posisi keuangan
+      accounts/          # CRUD akun
+      journals/          # input & riwayat jurnal
+      reports/           # 4 laporan
+  lib/
+    accounting/
+      balance.ts         # aturan saldo (satu sumber kebenaran)
+      journal.ts         # validasi double-entry
+      reports.ts         # perhitungan 4 laporan (fungsi murni)
+    auth.ts              # sesi JWT
+    queries.ts           # query database
+  db/
+    schema.ts            # skema Drizzle
+    coa.ts               # Chart of Accounts
+tests/
+  accounting.test.ts     # test logika (port dari test Laravel)
+scripts/
+  setup-db.ts            # buat tabel + seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Catatan porting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Logika bisnis di `src/lib/accounting/` adalah **fungsi murni** — tidak
+menyentuh database. Ini supaya:
 
-## Deploy on Vercel
+1. Bisa diuji tanpa database (lihat `tests/accounting.test.ts`).
+2. Angka yang dihasilkan identik dengan implementasi Laravel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Aturan penting yang dipertahankan dari versi Laravel:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Hanya jurnal `is_posted = true` dan tidak di-soft-delete yang dihitung.
+- Neraca: **Laba Berjalan hanya tahun berjalan**, bukan kumulatif.
+- Arus Kas: kas = akun aset berkode `111` / `112`.
+- Jurnal wajib balance (total debit = total kredit).
