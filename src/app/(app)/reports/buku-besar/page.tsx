@@ -56,10 +56,10 @@ export default async function BukuBesarPage({
             <div>
               <label className={labelCls}>Pilih Akun</label>
               <select name="account" defaultValue={sp.account ?? ""} className={inputCls}>
-                <option value="">— Pilih akun —</option>
+                <option value="">Pilih akun</option>
                 {accounts.map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.code} · {a.name}
+                    {a.code} {a.name}
                   </option>
                 ))}
               </select>
@@ -96,7 +96,7 @@ export default async function BukuBesarPage({
       {account && (
         <Card padded={false}>
           <CardHeader
-            title={`Mutasi — ${account.code} · ${account.name}`}
+            title={`Mutasi ${account.code} ${account.name}`}
             description={`${rows.length} mutasi pada periode ini`}
             icon={BookOpen}
           />

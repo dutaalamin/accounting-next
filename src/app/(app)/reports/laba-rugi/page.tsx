@@ -38,7 +38,7 @@ export default async function LabaRugiPage({
     <>
       <PageHeader
         title="Laba Rugi"
-        subtitle={`Periode ${startDate} — ${endDate}`}
+        subtitle={`Periode ${startDate} sampai ${endDate}`}
         breadcrumb={["Home", "Laporan", "Laba Rugi"]}
       />
 

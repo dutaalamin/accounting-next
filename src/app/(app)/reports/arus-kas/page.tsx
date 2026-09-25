@@ -25,7 +25,7 @@ export default async function ArusKasPage({
     <>
       <PageHeader
         title="Arus Kas"
-        subtitle={`Metode tidak langsung · ${startDate} — ${endDate}`}
+        subtitle={`Metode tidak langsung, ${startDate} sampai ${endDate}`}
         breadcrumb={["Home", "Laporan", "Arus Kas"]}
       />
 

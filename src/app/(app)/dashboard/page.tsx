@@ -93,7 +93,7 @@ export default async function DashboardPage() {
             : "Neraca belum seimbang, periksa kembali entri jurnal"}
         </span>
         <span className="ml-auto text-xs text-sap-label">
-          Aset {formatRupiah(neraca.totalAsset)} · Kewajiban + Modal{" "}
+          Aset {formatRupiah(neraca.totalAsset)}, Kewajiban + Modal{" "}
           {formatRupiah(neraca.totalLiabilityEquity)}
         </span>
       </Card>
@@ -103,7 +103,7 @@ export default async function DashboardPage() {
         <Card className="lg:col-span-2" padded={false}>
           <CardHeader
             title="Kinerja Tahun Ini"
-            description={`${yearStart} — ${today}`}
+            description={`${yearStart} sampai ${today}`}
             icon={BarChart3}
           />
           <div className="space-y-4 p-4">

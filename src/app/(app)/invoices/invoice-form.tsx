@@ -120,7 +120,7 @@ export function InvoiceForm({
               onChange={(e) => setPartyId(e.target.value)}
               className={inputCls}
             >
-              <option value="">— Pilih —</option>
+              <option value="">Pilih</option>
               {parties.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -218,10 +218,10 @@ export function InvoiceForm({
                       className={inputCls}
                       aria-label={`Produk baris ${idx + 1}`}
                     >
-                      <option value="">— Manual —</option>
+                      <option value="">Manual</option>
                       {products.map((p) => (
                         <option key={p.id} value={p.id}>
-                          {p.sku ? `${p.sku} · ` : ""}
+                          {p.sku ? `${p.sku} ` : ""}
                           {p.name}
                         </option>
                       ))}

@@ -29,7 +29,7 @@ export default async function CustomerInvoicesPage() {
     <>
       <PageHeader
         title="Tagihan Pelanggan"
-        subtitle="Invoice penjualan — jurnal ter-posting otomatis"
+        subtitle="Invoice penjualan, jurnal ter-posting otomatis"
         breadcrumb={["Home", "Piutang Usaha", "Tagihan Pelanggan"]}
         action={<ExportButton type="customer-invoices" />}
       />

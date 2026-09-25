@@ -148,10 +148,10 @@ export function JournalForm({ accounts }: { accounts: AccountRow[] }) {
                     className={inputCls}
                     aria-label={`Akun baris ${idx + 1}`}
                   >
-                    <option value="">— Pilih Akun —</option>
+                    <option value="">Pilih Akun</option>
                     {accounts.map((a) => (
                       <option key={a.id} value={a.id}>
-                        {a.code} · {a.name}
+                        {a.code} {a.name}
                       </option>
                     ))}
                   </select>

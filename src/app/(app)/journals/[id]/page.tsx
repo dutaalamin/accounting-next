@@ -33,7 +33,7 @@ export default async function JournalDetailPage({
     <>
       <PageHeader
         title={`Jurnal ${entry.referenceNumber}`}
-        subtitle={`${entry.date} · ${entry.description ?? "Tanpa keterangan"}`}
+        subtitle={`${entry.date}, ${entry.description ?? "Tanpa keterangan"}`}
         breadcrumb={["Home", "Transaksi", entry.referenceNumber]}
         action={
           <Link href="/journals">

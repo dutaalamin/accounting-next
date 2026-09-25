@@ -36,7 +36,7 @@ export default async function AccountsPage() {
     <>
       <PageHeader
         title="Chart of Accounts"
-        subtitle={`${accounts.length} akun aktif · saldo per ${today}`}
+        subtitle={`${accounts.length} akun aktif, saldo per ${today}`}
         breadcrumb={["Home", "Akun"]}
         action={<ExportButton type="accounts" />}
       />

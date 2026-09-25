@@ -25,7 +25,7 @@ export default async function JournalsPage() {
     <>
       <PageHeader
         title="Catat Transaksi Harian"
-        subtitle="Input jurnal umum (double-entry) — total debit harus sama dengan total kredit"
+        subtitle="Input jurnal umum (double-entry), total debit harus sama dengan total kredit"
         breadcrumb={["Home", "Transaksi"]}
         action={<ExportButton type="journals" />}
       />

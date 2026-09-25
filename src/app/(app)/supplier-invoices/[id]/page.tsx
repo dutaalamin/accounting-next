@@ -35,7 +35,7 @@ export default async function SupplierInvoiceDetail({
     <>
       <PageHeader
         title={`Tagihan ${inv.invoiceNumber}`}
-        subtitle={`${inv.partyName} · ${inv.invoiceDate}`}
+        subtitle={`${inv.partyName}, ${inv.invoiceDate}`}
         breadcrumb={["Home", "Tagihan Pemasok", inv.invoiceNumber]}
         action={
           <div className="flex gap-2">
