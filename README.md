@@ -88,8 +88,8 @@ npm run db:reset                         # pratinjau: kosongkan data transaksi
 npx tsx scripts/reset-data.ts --confirm  # jalankan (akun COA & user disimpan)
 ```
 
-> **Untuk deploy ke cloud**, baca **[DEPLOY.md](./DEPLOY.md)** — berisi
-> langkah lengkap, checklist produksi, dan catatan keamanan.
+> **Untuk deploy ke Vercel + Supabase**, baca **[DEPLOY.md](./DEPLOY.md)** —
+> langkah lengkap dari nol, checklist produksi, dan solusi kalau ada masalah.
 
 ## Struktur
 

@@ -1,8 +1,12 @@
 /**
- * Koneksi database — PostgreSQL asli via `pg` + Drizzle ORM.
+ * Koneksi database — PostgreSQL via `pg` + Drizzle ORM.
  *
- * DATABASE_URL ada di .env.local. Skema (src/db/schema.ts) tidak berubah
- * bila pindah provider — hanya file ini yang perlu disesuaikan.
+ * Mendukung dua lingkungan:
+ *  - Lokal   : PostgreSQL di komputer (tanpa SSL)
+ *  - Cloud   : Neon / Supabase / Railway (WAJIB SSL, koneksi dibatasi)
+ *
+ * Skema (src/db/schema.ts) tidak berubah bila pindah provider — hanya
+ * konfigurasi di file ini.
  */
 
 import "server-only";
@@ -15,11 +19,35 @@ const globalForDb = globalThis as unknown as {
   __db?: NodePgDatabase<typeof schema>;
 };
 
+/** Apakah URL mengarah ke database lokal? */
+function isLocal(connectionString: string): boolean {
+  return /@(localhost|127\.0\.0\.1|\[::1\])/.test(connectionString);
+}
+
 function createDb() {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL belum di-set. Salin .env.example menjadi .env.local, " +
+        "atau isi variabel ini di dashboard hosting.",
+    );
+  }
+
+  const local = isLocal(connectionString);
+
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 10,
+    connectionString,
+    // Neon & penyedia cloud lain butuh SSL. Untuk localhost tidak perlu.
+    // `rejectUnauthorized: false` dipakai karena sertifikat penyedia
+    // managed sering tidak terpasang di lingkungan serverless.
+    ssl: local ? undefined : { rejectUnauthorized: false },
+    // Serverless (Vercel) membuat banyak instance fungsi; batasi jumlah
+    // koneksi per instance supaya tidak menghabiskan kuota database.
+    max: local ? 10 : 3,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 15_000,
   });
+
   globalForDb.__pool = pool;
   return drizzle(pool, { schema });
 }
