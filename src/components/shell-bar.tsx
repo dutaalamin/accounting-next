@@ -13,6 +13,11 @@ import {
   Search,
   Bell,
   LogOut,
+  Users,
+  Truck,
+  Package,
+  Receipt,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { logout } from "@/app/(auth)/login/actions";
@@ -30,6 +35,16 @@ const NAV: { group: string; items: NavItem[] }[] = [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/accounts", label: "Akun & Dompet", icon: Wallet },
       { href: "/journals", label: "Transaksi", icon: PenLine },
+    ],
+  },
+  {
+    group: "Penjualan & Pembelian",
+    items: [
+      { href: "/customers", label: "Pelanggan", icon: Users },
+      { href: "/customer-invoices", label: "Tagihan Pelanggan", icon: Receipt },
+      { href: "/vendors", label: "Pemasok", icon: Truck },
+      { href: "/supplier-invoices", label: "Tagihan Pemasok", icon: FileText },
+      { href: "/products", label: "Produk & Layanan", icon: Package },
     ],
   },
   {

@@ -9,7 +9,9 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:setup": "tsx scripts/setup-db.ts"
+    "db:setup": "tsx scripts/setup-db.ts",
+    "db:seed": "tsx scripts/seed-sample.ts",
+    "db:migrate": "tsx scripts/migrate-db.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",

@@ -15,12 +15,27 @@ project `../accounting` (Laravel + Filament).
 | Auth | JWT di cookie HttpOnly (`jose`) + bcrypt |
 | Test | Vitest |
 
-## Fitur (tahap MVP)
+## Fitur
 
+**Akuntansi inti**
 - Login / logout dengan role (admin, staff)
 - CRUD akun (Chart of Accounts)
 - Input jurnal umum (double-entry) + validasi balance
 - 4 laporan: Neraca, Laba Rugi, Arus Kas, Buku Besar
+
+**Master data**
+- Pelanggan, Pemasok, Produk & Layanan (dengan lacak stok)
+
+**Penjualan & Pembelian**
+- Tagihan pelanggan (invoice) — jurnal ter-posting otomatis
+- Tagihan pemasok — jurnal ter-posting otomatis
+- Halaman cetak invoice (siap simpan PDF via browser)
+
+**Ketahanan**
+- Semua operasi tulis dalam transaksi DB (all-or-nothing)
+- Validasi stok dengan row lock (anti stok minus saat bersamaan)
+- Nomor invoice unik, pesan error jelas
+- Error boundary + halaman 404
 
 ## Menjalankan
 
@@ -43,8 +58,12 @@ Login: `admin@admin.com` / `password`
 ## Perintah lain
 
 ```bash
-npm test             # jalankan unit test logika akuntansi
+npm test             # jalankan unit test logika akuntansi (35 test)
 npm run build        # build produksi
+npm run db:migrate   # tambah tabel master & invoice
+npm run db:seed      # seed data contoh (pelanggan, pemasok, produk)
+
+npx tsx scripts/check-db.ts   # cek integritas: jurnal balance, stok, dll
 ```
 
 ## Struktur
@@ -63,13 +82,16 @@ src/
       balance.ts         # aturan saldo (satu sumber kebenaran)
       journal.ts         # validasi double-entry
       reports.ts         # perhitungan 4 laporan (fungsi murni)
+      invoice.ts         # validasi & jurnal invoice (fungsi murni)
     auth.ts              # sesi JWT
     queries.ts           # query database
+    invoice-service.ts   # buat invoice + posting jurnal (transaksional)
   db/
-    schema.ts            # skema Drizzle
+    schema.ts            # skema Drizzle (akun, jurnal, master, invoice)
     coa.ts               # Chart of Accounts
 tests/
-  accounting.test.ts     # test logika (port dari test Laravel)
+  accounting.test.ts     # test logika laporan & jurnal
+  invoice.test.ts        # test logika invoice & posting
 scripts/
   setup-db.ts            # buat tabel + seed
 ```
