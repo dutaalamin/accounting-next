@@ -21,8 +21,8 @@ import {
   FileText,
   UsersRound,
   UserCog,
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronLeft,
+  ChevronRight,
   Menu,
   X,
   type LucideIcon,
@@ -280,9 +280,13 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
           onClick={toggle}
           title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
           aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          className="absolute -right-3 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-[#2a2e38] bg-[#1c1f27] text-white/70 shadow-md transition hover:border-white/20 hover:bg-[#252a34] hover:text-white"
+          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:scale-105 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
         >
-          {collapsed ? <PanelLeftOpen size={13} /> : <PanelLeftClose size={13} />}
+          {collapsed ? (
+            <ChevronRight size={20} strokeWidth={2.5} />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2.5} />
+          )}
         </button>
       </aside>
 
