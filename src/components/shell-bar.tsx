@@ -11,8 +11,6 @@ import {
   BookOpen,
   BarChart3,
   Scale,
-  Search,
-  Bell,
   LogOut,
   Users,
   Truck,
@@ -335,52 +333,5 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
         </div>
       )}
     </>
-  );
-}
-
-const TITLES: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/accounts": "Akun & Dompet",
-  "/journals": "Transaksi",
-  "/customers": "Pelanggan",
-  "/customer-invoices": "Tagihan Pelanggan",
-  "/vendors": "Pemasok",
-  "/supplier-invoices": "Tagihan Pemasok",
-  "/products": "Produk & Layanan",
-  "/users": "Kelola Pengguna",
-  "/profile": "Profil Saya",
-  "/reports/arus-kas": "Arus Kas",
-  "/reports/buku-besar": "Buku Besar",
-  "/reports/laba-rugi": "Laba Rugi",
-  "/reports/neraca": "Neraca",
-};
-
-export function Topbar() {
-  const pathname = usePathname();
-  const title =
-    TITLES[pathname] ?? (pathname.startsWith("/journals/") ? "Detail Jurnal" : "Accounting");
-
-  return (
-    <header className="sticky top-0 z-20 flex h-[76px] items-center justify-between gap-4 border-b border-sap-border bg-white/80 px-6 backdrop-blur-xl">
-      <div>
-        <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-sap-label">
-          {title}
-        </p>
-        <p className="text-sm font-semibold text-sap-text">Selamat datang kembali</p>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <div className="hidden h-10 items-center gap-2 rounded-xl border border-sap-border bg-sap-bg px-3.5 text-sap-label md:flex">
-          <Search size={15} />
-          <span className="text-xs">Cari…</span>
-        </div>
-        <button
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-sap-border bg-white text-sap-label transition hover:bg-sap-hover hover:text-sap-text"
-          title="Notifikasi"
-        >
-          <Bell size={17} />
-        </button>
-      </div>
-    </header>
   );
 }

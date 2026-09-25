@@ -83,6 +83,9 @@ npx tsx scripts/check-db.ts              # cek integritas data
 npx tsx scripts/backup.ts backup         # backup database
 npx tsx scripts/backup.ts restore <file> # pulihkan dari backup
 npx tsx scripts/manage-user.ts list      # kelola pengguna via CLI
+
+npm run db:reset                         # pratinjau: kosongkan data transaksi
+npx tsx scripts/reset-data.ts --confirm  # jalankan (akun COA & user disimpan)
 ```
 
 > **Untuk deploy ke cloud**, baca **[DEPLOY.md](./DEPLOY.md)** — berisi
