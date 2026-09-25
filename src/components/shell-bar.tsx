@@ -278,7 +278,7 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
           onClick={toggle}
           title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
           aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[#14161c] text-white shadow-lg ring-1 ring-white/20 transition hover:scale-105 hover:bg-[#252a34] active:scale-95"
+          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-sap-border bg-white text-sap-label shadow-md transition hover:scale-105 hover:border-sap-blue hover:bg-sap-blue-light hover:text-sap-blue active:scale-95"
         >
           {collapsed ? (
             <ChevronRight size={20} strokeWidth={2.5} />
