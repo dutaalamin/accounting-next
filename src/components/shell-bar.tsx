@@ -220,7 +220,23 @@ function UserBox({
   );
 }
 
-export function Sidebar({ userName, role }: { userName: string; role: string }) {
+/**
+ * Kerangka aplikasi: header mobile + sidebar (desktop) + drawer (mobile) + konten.
+ *
+ * Digabung dalam satu komponen karena header mobile dan drawer berbagi
+ * state yang sama (buka/tutup). Header diletakkan DI ATAS baris flex,
+ * bukan sebagai saudara sidebar — kalau tidak, header ikut memakan
+ * lebar konten dan isi halaman jadi terpotong di layar kecil.
+ */
+export function AppShell({
+  userName,
+  role,
+  children,
+}: {
+  userName: string;
+  role: string;
+  children: React.ReactNode;
+}) {
   const isAdminUser = role === "admin";
   const sections = NAV.map((s) => ({
     ...s,
@@ -230,7 +246,7 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
   const { collapsed, toggle } = useCollapsed();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Sembunyikan saat klik di luar / ganti halaman sudah ditangani NavLinks.
+  // Tutup drawer dengan tombol Esc.
   useEffect(() => {
     if (!mobileOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -240,62 +256,76 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
     return () => window.removeEventListener("keydown", onKey);
   }, [mobileOpen]);
 
-  // Lebar sidebar: 264px normal, 76px saat ter-minimize.
   const widthCls = collapsed ? "w-[76px]" : "w-[264px]";
 
   return (
-    <>
-      {/* Sidebar desktop */}
-      <aside
-        className={`group/side relative hidden shrink-0 flex-col border-r border-sap-border bg-white transition-[width] duration-200 lg:flex ${widthCls}`}
-      >
-        {/* Brand */}
-        <div
-          className={`flex h-[76px] items-center border-b border-sap-border ${
-            collapsed ? "justify-center px-2" : "gap-3 px-5"
-          }`}
-        >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
-            A
-          </div>
-          {!collapsed && (
-            <div className="min-w-0 flex-1 leading-tight">
-              <p className="truncate text-sm font-semibold text-sap-text">Accounting</p>
-              <p className="text-[11px] text-sap-label">Financial Suite</p>
-            </div>
-          )}
-        </div>
-
-        <NavLinks sections={sections} collapsed={collapsed} />
-        <UserBox userName={userName} role={role} collapsed={collapsed} />
-
-        {/* Tombol minimize — bulat, di tepi kanan & tengah tinggi sidebar */}
+    <div className="flex min-h-screen flex-col bg-sap-bg">
+      {/* Header mobile */}
+      <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-sap-border bg-white px-4 lg:hidden">
         <button
           type="button"
-          onClick={toggle}
-          title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-sap-border bg-white text-sap-label shadow-md transition hover:scale-105 hover:border-sap-blue hover:bg-sap-blue-light hover:text-sap-blue active:scale-95"
+          onClick={() => setMobileOpen(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-sap-border text-sap-text transition hover:bg-sap-hover"
+          aria-label="Buka menu"
         >
-          {collapsed ? (
-            <ChevronRight size={20} strokeWidth={2.5} />
-          ) : (
-            <ChevronLeft size={20} strokeWidth={2.5} />
-          )}
+          <Menu size={18} />
         </button>
-      </aside>
+        <div className="flex items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-xs font-bold text-white">
+            A
+          </span>
+          <span className="text-sm font-semibold text-sap-text">Accounting</span>
+        </div>
+      </header>
 
-      {/* Tombol buka sidebar (mobile) */}
-      <button
-        type="button"
-        onClick={() => setMobileOpen(true)}
-        className="fixed bottom-4 left-4 z-40 flex h-11 w-11 items-center justify-center rounded-xl bg-[#14161c] text-white shadow-lg lg:hidden"
-        aria-label="Buka menu"
-      >
-        <Menu size={20} />
-      </button>
+      <div className="flex flex-1">
+        {/* Sidebar desktop */}
+        <aside
+          className={`relative hidden shrink-0 flex-col border-r border-sap-border bg-white transition-[width] duration-200 lg:flex ${widthCls}`}
+        >
+          <div
+            className={`flex h-[76px] items-center border-b border-sap-border ${
+              collapsed ? "justify-center px-2" : "gap-3 px-5"
+            }`}
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
+              A
+            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1 leading-tight">
+                <p className="truncate text-sm font-semibold text-sap-text">Accounting</p>
+                <p className="text-[11px] text-sap-label">Financial Suite</p>
+              </div>
+            )}
+          </div>
 
-      {/* Sidebar mobile (overlay) */}
+          <NavLinks sections={sections} collapsed={collapsed} />
+          <UserBox userName={userName} role={role} collapsed={collapsed} />
+
+          <button
+            type="button"
+            onClick={toggle}
+            title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
+            aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
+            className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-sap-border bg-white text-sap-label shadow-md transition hover:scale-105 hover:border-sap-blue hover:bg-sap-blue-light hover:text-sap-blue active:scale-95"
+          >
+            {collapsed ? (
+              <ChevronRight size={20} strokeWidth={2.5} />
+            ) : (
+              <ChevronLeft size={20} strokeWidth={2.5} />
+            )}
+          </button>
+        </aside>
+
+        {/* Konten */}
+        <div className="flex min-w-0 flex-1 flex-col">
+          <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
+            <div className="mx-auto w-full max-w-[1240px] space-y-5">{children}</div>
+          </main>
+        </div>
+      </div>
+
+      {/* Drawer mobile */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
@@ -304,14 +334,14 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
             onClick={() => setMobileOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
-          <div className="relative flex h-full w-[264px] flex-col bg-white">
-            <div className="flex h-[76px] items-center justify-between px-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
+          <div className="relative flex h-full w-[264px] max-w-[80vw] flex-col bg-white shadow-xl">
+            <div className="flex h-14 items-center justify-between px-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
                   A
                 </div>
                 <div className="leading-tight">
-                  <p className="text-sm font-semibold text-white">Accounting</p>
+                  <p className="text-sm font-semibold text-sap-text">Accounting</p>
                   <p className="text-[11px] text-sap-label">Financial Suite</p>
                 </div>
               </div>
@@ -324,11 +354,15 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
                 <X size={18} />
               </button>
             </div>
-            <NavLinks sections={sections} collapsed={false} onNavigate={() => setMobileOpen(false)} />
+            <NavLinks
+              sections={sections}
+              collapsed={false}
+              onNavigate={() => setMobileOpen(false)}
+            />
             <UserBox userName={userName} role={role} collapsed={false} />
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

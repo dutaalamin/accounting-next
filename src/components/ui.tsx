@@ -220,8 +220,8 @@ export function InfoLabel({
 
 export function Table({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-sm">{children}</table>
+    <div className="w-full overflow-x-auto">
+      <table className="w-full min-w-max border-collapse text-sm">{children}</table>
     </div>
   );
 }
@@ -237,7 +237,7 @@ export function Th({
 }) {
   return (
     <th
-      className={`border-b border-sap-border px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-sap-label ${
+      className={`whitespace-nowrap border-b border-sap-border px-3 py-3 text-[11px] font-semibold uppercase tracking-wider text-sap-label sm:px-5 ${
         align === "right" ? "text-right" : align === "center" ? "text-center" : "text-left"
       } ${className}`}
     >
@@ -260,7 +260,7 @@ export function Td({
   return (
     <td
       colSpan={colSpan}
-      className={`border-b border-sap-border-light px-5 py-3.5 text-sap-text ${
+      className={`border-b border-sap-border-light px-3 py-3.5 text-sap-text sm:px-5 ${
         align === "right" ? "text-right" : align === "center" ? "text-center" : "text-left"
       } ${className}`}
     >
