@@ -30,16 +30,16 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — JANGAN commit (berisi password database & kunci sesi)
 .env*
+!.env.example
 
 # vercel
 .vercel
 
+# backup database — berisi data keuangan, jangan ke Git
+backups/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-backups/
-
-.vercel
-.env*
