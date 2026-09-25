@@ -1,32 +1,18 @@
 import { requireUser } from "@/lib/auth";
-import { logout } from "../(auth)/login/actions";
 import { Sidebar } from "@/components/sidebar";
+import { Topbar } from "@/components/topbar";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
-          <div />
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-medium text-slate-900">{user.name}</p>
-              <p className="text-xs text-slate-400">{user.role}</p>
-            </div>
-            <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-              >
-                Keluar
-              </button>
-            </form>
-          </div>
-        </header>
-        <main className="flex-1 p-6">{children}</main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Topbar userName={user.name} role={user.role} />
+        <main className="flex-1 px-8 py-7">
+          <div className="mx-auto w-full max-w-[1200px] space-y-6">{children}</div>
+        </main>
       </div>
     </div>
   );

@@ -1,68 +1,87 @@
+import { Wallet } from "lucide-react";
 import { getAccounts, getJournalLines } from "@/lib/queries";
 import { balanceUntil } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
 import { ACCOUNT_TYPE_LABELS } from "@/db/coa";
+import { PageHeader, Card, CardHeader, Badge, Table, Th, Td, EmptyState } from "@/components/ui";
+import type { Tone } from "@/components/ui";
 import { AccountForm } from "./account-form";
 
 export const dynamic = "force-dynamic";
+
+const TYPE_TONE: Record<string, Tone> = {
+  asset: "indigo",
+  liability: "rose",
+  equity: "amber",
+  revenue: "emerald",
+  expense: "slate",
+};
 
 export default async function AccountsPage() {
   const [accounts, lines] = await Promise.all([getAccounts(), getJournalLines()]);
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Daftar Akun / Dompet</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {accounts.length} akun aktif. Saldo dihitung sampai {today}.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        title="Akun & Dompet"
+        subtitle={`${accounts.length} akun aktif · saldo dihitung sampai ${today}`}
+      />
 
       <AccountForm />
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50">
-            <tr className="text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
-              <th className="px-4 py-3">Kode</th>
-              <th className="px-4 py-3">Nama Akun</th>
-              <th className="px-4 py-3">Tipe</th>
-              <th className="px-4 py-3 text-right">Saldo</th>
+      <Card padded={false}>
+        <CardHeader
+          title="Chart of Accounts"
+          description="Daftar seluruh akun beserta saldo berjalan"
+          icon={Wallet}
+        />
+        <Table>
+          <thead>
+            <tr>
+              <Th className="w-24">Kode</Th>
+              <Th>Nama Akun</Th>
+              <Th className="w-32">Tipe</Th>
+              <Th align="right" className="w-44">
+                Saldo
+              </Th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody>
             {accounts.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-slate-400 italic">
-                  Belum ada akun.
-                </td>
-              </tr>
+              <EmptyState
+                icon={Wallet}
+                title="Belum ada akun"
+                description="Tambahkan akun pertama di form di atas."
+                colSpan={4}
+              />
             )}
             {accounts.map((a) => {
               const balance = balanceUntil(a, lines, today);
               return (
-                <tr key={a.id} className="transition hover:bg-slate-50">
-                  <td className="px-4 py-3">
-                    <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-500">
+                <tr key={a.id} className="group transition hover:bg-slate-50/70">
+                  <Td>
+                    <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs font-medium text-slate-600">
                       {a.code}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 font-medium text-slate-800">{a.name}</td>
-                  <td className="px-4 py-3 text-slate-500">{ACCOUNT_TYPE_LABELS[a.type]}</td>
-                  <td
-                    className={`px-4 py-3 text-right font-semibold ${
-                      balance < 0 ? "text-rose-600" : "text-slate-800"
-                    }`}
-                  >
-                    {formatRupiah(balance)}
-                  </td>
+                  </Td>
+                  <Td className="font-medium text-slate-800">{a.name}</Td>
+                  <Td>
+                    <Badge tone={TYPE_TONE[a.type] ?? "slate"}>
+                      {ACCOUNT_TYPE_LABELS[a.type]}
+                    </Badge>
+                  </Td>
+                  <Td align="right" className="font-semibold tabular-nums">
+                    <span className={balance < 0 ? "text-rose-600" : "text-slate-900"}>
+                      {formatRupiah(balance)}
+                    </span>
+                  </Td>
                 </tr>
               );
             })}
           </tbody>
-        </table>
-      </div>
-    </div>
+        </Table>
+      </Card>
+    </>
   );
 }
