@@ -16,7 +16,7 @@ export default async function LoginPage() {
   return (
     <div className="flex min-h-screen">
       {/* Panel kiri — brand */}
-      <div className="relative hidden w-1/2 overflow-hidden bg-slate-950 lg:flex">
+      <div className="relative hidden w-1/2 overflow-hidden bg-[#0a0b0e] lg:flex">
         <div className="absolute -left-24 top-1/4 h-96 w-96 rounded-full bg-indigo-600/30 blur-[120px]" />
         <div className="absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-violet-600/20 blur-[120px]" />
 
@@ -52,7 +52,7 @@ export default async function LoginPage() {
             </ul>
           </div>
 
-          <p className="text-[11px] text-slate-600">© 2026 Accounting · Next.js</p>
+          <p className="text-[11px] text-[#4b515b]">© 2026 Accounting · Next.js</p>
         </div>
       </div>
 

@@ -48,7 +48,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-[268px] shrink-0 flex-col bg-slate-950 text-slate-300">
+    <aside className="flex w-[268px] shrink-0 flex-col border-r border-[#1b1e24] bg-[#0a0b0e] text-[#8b929c]">
       {/* Brand */}
       <div className="flex h-[72px] items-center gap-3 px-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white shadow-lg shadow-indigo-500/30">
@@ -81,7 +81,7 @@ export function Sidebar() {
                       className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${
                         active
                           ? "bg-white/[0.08] font-medium text-white shadow-sm"
-                          : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-100"
+                          : "text-[#8b929c] hover:bg-white/[0.04] hover:text-[#e8eaed]"
                       }`}
                     >
                       {active && (
@@ -90,7 +90,7 @@ export function Sidebar() {
                       <Icon
                         size={18}
                         strokeWidth={active ? 2.2 : 1.8}
-                        className={active ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"}
+                        className={active ? "text-indigo-400" : "text-[#5b616b] group-hover:text-[#a5abb4]"}
                       />
                       {item.label}
                     </Link>
@@ -103,7 +103,7 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-white/5 px-6 py-4">
-        <p className="text-[11px] text-slate-600">v0.1 · Next.js</p>
+        <p className="text-[11px] text-[#4b515b]">v0.1 · Next.js</p>
       </div>
     </aside>
   );

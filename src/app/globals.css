@@ -1,19 +1,68 @@
 @import "tailwindcss";
 
 /*
- * Aplikasi ini sengaja TERANG saja (light-only) — panel keuangan lebih
- * nyaman dibaca terang, dan ini menghindari tampilan gelap otomatis
- * saat OS pengguna memakai tema gelap.
+ * TEMA GELAP — gaya "Dark Minimal" (Linear / Vercel).
+ *
+ * Tailwind v4 mengekspos setiap warna sebagai CSS variable (--color-*),
+ * dan utility seperti `bg-white` / `text-slate-900` memakai variable itu.
+ * Jadi kita bisa membalik seluruh palet di satu tempat: kelas "terang"
+ * otomatis menjadi gelap, tanpa menyentuh satu pun komponen.
  */
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  color-scheme: dark;
+
+  /* Permukaan */
+  --color-white: #16181d; /* kartu */
+  --color-slate-50: #0b0c0f; /* latar halaman */
+  --color-slate-100: #1c1f25; /* chip / hover */
+  --color-slate-200: #262a31; /* garis */
+  --color-slate-300: #363b44;
+  --color-slate-400: #6b7280; /* teks redup */
+  --color-slate-500: #8b929c;
+  --color-slate-600: #a5abb4;
+  --color-slate-700: #c6cad0;
+  --color-slate-800: #e0e2e6;
+  --color-slate-900: #ededed; /* teks utama */
+  --color-slate-950: #fafafa;
+
+  /* Aksen — versi lebih terang supaya terbaca di latar gelap */
+  --color-indigo-50: #1b1b3a;
+  --color-indigo-100: #262654;
+  --color-indigo-400: #8b8bf5;
+  --color-indigo-500: #7c7cf0;
+  --color-indigo-600: #a5a5f7;
+  --color-indigo-700: #c0c0fa;
+
+  --color-emerald-50: #0d2a20;
+  --color-emerald-100: #123a2c;
+  --color-emerald-200: #1b5140;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #34d399;
+  --color-emerald-700: #6ee7b7;
+  --color-emerald-800: #a7f3d0;
+
+  --color-rose-50: #2d1119;
+  --color-rose-100: #3d1622;
+  --color-rose-200: #5c1f30;
+  --color-rose-400: #fb7185;
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #fb7185;
+  --color-rose-700: #fda4af;
+  --color-rose-800: #fecdd3;
+
+  --color-amber-50: #2b1e0a;
+  --color-amber-100: #3a290e;
+  --color-amber-200: #553c14;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #fbbf24;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -24,21 +73,29 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-slate-50);
+  color: var(--color-slate-900);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Angka keuangan lebih enak dibaca sejajar */
+/* Angka keuangan sejajar */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbar halus untuk sidebar */
-aside::-webkit-scrollbar {
-  width: 6px;
+/* Scrollbar gelap */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
-aside::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+::-webkit-scrollbar-track {
+  background: #0b0c0f;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2e36;
   border-radius: 9999px;
+  border: 2px solid #0b0c0f;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3f49;
 }
