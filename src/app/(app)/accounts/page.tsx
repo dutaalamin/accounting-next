@@ -16,6 +16,7 @@ import {
   type InfoTone,
 } from "@/components/ui";
 import { AccountForm } from "./account-form";
+import { ExportButton } from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,7 @@ export default async function AccountsPage() {
         title="Chart of Accounts"
         subtitle={`${accounts.length} akun aktif · saldo per ${today}`}
         breadcrumb={["Home", "Akun"]}
+        action={<ExportButton type="accounts" />}
       />
 
       <AccountForm />

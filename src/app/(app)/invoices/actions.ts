@@ -1,7 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireUser } from "@/lib/auth";
+import { requireUser, requireAdmin } from "@/lib/auth";
+import {
+  deleteCustomerInvoice,
+  deleteSupplierInvoice,
+  CorrectionError,
+} from "@/lib/correction-service";
 import {
   createCustomerInvoice,
   createSupplierInvoice,
@@ -128,4 +133,70 @@ export async function createSupplierInvoiceAction(
   revalidatePath("/accounts");
   revalidatePath("/journals");
   return { success: `Tagihan ${parsed.data.invoiceNumber} berhasil dibuat & jurnal ter-posting.` };
+}
+
+// ============================ Pembatalan (koreksi) ============================
+
+export interface CancelState {
+  error?: string;
+  success?: string;
+}
+
+/**
+ * Batalkan invoice pelanggan.
+ * Hanya admin. Jurnal tidak dihapus — dibuat jurnal pembalik (jejak audit).
+ */
+export async function cancelCustomerInvoice(
+  _prev: CancelState,
+  formData: FormData,
+): Promise<CancelState> {
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
+
+  const id = Number(formData.get("id"));
+  if (!id) return { error: "Invoice tidak valid." };
+
+  try {
+    await deleteCustomerInvoice(id);
+  } catch (e) {
+    if (e instanceof CorrectionError) return { error: e.message };
+    return { error: e instanceof Error ? e.message : "Gagal membatalkan invoice." };
+  }
+
+  revalidatePath("/customer-invoices");
+  revalidatePath("/journals");
+  revalidatePath("/accounts");
+  revalidatePath("/products");
+  revalidatePath("/dashboard");
+  return { success: "Invoice dibatalkan. Jurnal pembalik sudah dibuat & stok dikembalikan." };
+}
+
+export async function cancelSupplierInvoice(
+  _prev: CancelState,
+  formData: FormData,
+): Promise<CancelState> {
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
+
+  const id = Number(formData.get("id"));
+  if (!id) return { error: "Tagihan tidak valid." };
+
+  try {
+    await deleteSupplierInvoice(id);
+  } catch (e) {
+    if (e instanceof CorrectionError) return { error: e.message };
+    return { error: e instanceof Error ? e.message : "Gagal membatalkan tagihan." };
+  }
+
+  revalidatePath("/supplier-invoices");
+  revalidatePath("/journals");
+  revalidatePath("/accounts");
+  revalidatePath("/dashboard");
+  return { success: "Tagihan dibatalkan. Jurnal pembalik sudah dibuat." };
 }

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui";
 import { MasterForm } from "@/components/master-form";
 import { createProduct } from "@/app/(app)/master-actions";
+import { ExportButton } from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function ProductsPage() {
         title="Produk & Layanan"
         subtitle={`${rows.length} item terdaftar`}
         breadcrumb={["Home", "Master Data", "Produk"]}
+        action={<ExportButton type="products" />}
       />
 
       <MasterForm

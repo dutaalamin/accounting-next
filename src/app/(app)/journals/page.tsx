@@ -13,6 +13,7 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { JournalForm } from "./journal-form";
+import { ExportButton } from "@/components/export-button";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function JournalsPage() {
         title="Catat Transaksi Harian"
         subtitle="Input jurnal umum (double-entry) — total debit harus sama dengan total kredit"
         breadcrumb={["Home", "Transaksi"]}
+        action={<ExportButton type="journals" />}
       />
 
       <JournalForm accounts={accounts} />

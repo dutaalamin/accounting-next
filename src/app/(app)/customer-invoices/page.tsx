@@ -12,6 +12,7 @@ import {
   InfoLabel,
   EmptyState,
 } from "@/components/ui";
+import { ExportButton } from "@/components/export-button";
 import { InvoiceForm } from "../invoices/invoice-form";
 import { createCustomerInvoiceAction } from "../invoices/actions";
 
@@ -30,6 +31,7 @@ export default async function CustomerInvoicesPage() {
         title="Tagihan Pelanggan"
         subtitle="Invoice penjualan — jurnal ter-posting otomatis"
         breadcrumb={["Home", "Piutang Usaha", "Tagihan Pelanggan"]}
+        action={<ExportButton type="customer-invoices" />}
       />
 
       <InvoiceForm

@@ -31,6 +31,22 @@ project `../accounting` (Laravel + Filament).
 - Tagihan pemasok — jurnal ter-posting otomatis
 - Halaman cetak invoice (siap simpan PDF via browser)
 
+**Keamanan & Pengguna**
+- Kelola pengguna (tambah, atur peran) — admin saja
+- Ganti password sendiri (min. 8 karakter, huruf + angka)
+- Aksi hapus data dibatasi hanya untuk admin
+- Validasi konfigurasi saat start (menolak kunci contoh di produksi)
+- Sesi JWT di cookie HttpOnly + password bcrypt
+
+**Koreksi Data**
+- Batalkan invoice: jurnal pembalik otomatis + stok dikembalikan
+- Jejak audit tetap tersimpan (jurnal asli tidak dihapus)
+- Validasi rentang tanggal laporan (ditukar otomatis + peringatan)
+
+**Backup & Data**
+- Backup & restore database (`scripts/backup.ts`)
+- Ekspor CSV: akun, jurnal, invoice, produk, pelanggan, pemasok
+
 **Ketahanan**
 - Semua operasi tulis dalam transaksi DB (all-or-nothing)
 - Validasi stok dengan row lock (anti stok minus saat bersamaan)
@@ -63,8 +79,14 @@ npm run build        # build produksi
 npm run db:migrate   # tambah tabel master & invoice
 npm run db:seed      # seed data contoh (pelanggan, pemasok, produk)
 
-npx tsx scripts/check-db.ts   # cek integritas: jurnal balance, stok, dll
+npx tsx scripts/check-db.ts              # cek integritas data
+npx tsx scripts/backup.ts backup         # backup database
+npx tsx scripts/backup.ts restore <file> # pulihkan dari backup
+npx tsx scripts/manage-user.ts list      # kelola pengguna via CLI
 ```
+
+> **Untuk deploy ke cloud**, baca **[DEPLOY.md](./DEPLOY.md)** — berisi
+> langkah lengkap, checklist produksi, dan catatan keamanan.
 
 ## Struktur
 

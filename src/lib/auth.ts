@@ -8,6 +8,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
+import { validateEnv } from "./env";
 
 const COOKIE_NAME = "session";
 
@@ -25,6 +26,9 @@ export interface SessionUser {
   email: string;
   role: string;
 }
+
+/** Pastikan konfigurasi aman sebelum operasi auth apa pun. */
+validateEnv();
 
 export async function hashPassword(plain: string): Promise<string> {
   return bcrypt.hash(plain, 10);
@@ -73,6 +77,23 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   } catch {
     return null;
   }
+}
+
+/** Apakah user ini admin? */
+export function isAdmin(user: SessionUser): boolean {
+  return user.role === "admin";
+}
+
+/**
+ * Wajib admin — untuk aksi sensitif (kelola user, hapus data).
+ * Melempar error bila bukan admin, supaya tidak bisa dilewati diam-diam.
+ */
+export async function requireAdmin(): Promise<SessionUser> {
+  const user = await requireUser();
+  if (!isAdmin(user)) {
+    throw new Error("Akses ditolak: hanya admin yang boleh melakukan aksi ini.");
+  }
+  return user;
 }
 
 /** Wajib login — dipakai di server component/action. */

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { accounts, journalEntryLines } from "@/db/schema";
-import { requireUser } from "@/lib/auth";
+import { requireUser, requireAdmin } from "@/lib/auth";
 import { round2 } from "@/lib/accounting/balance";
 
 export interface AccountState {
@@ -87,7 +87,12 @@ export async function updateAccount(
  * menghapusnya akan merusak laporan (baris jurnal jadi menggantung).
  */
 export async function deleteAccount(id: number): Promise<AccountState> {
-  await requireUser();
+  // Menghapus akun mengubah laporan keuangan -> hanya admin.
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
 
   const used = await db
     .select({ n: sql<string>`count(*)` })

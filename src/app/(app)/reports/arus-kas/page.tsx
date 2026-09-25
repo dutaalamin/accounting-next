@@ -3,6 +3,8 @@ import { getAccounts, getJournalLines } from "@/lib/queries";
 import { buildArusKas, type CashFlowDetail } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
 import { PageHeader, Card, CardHeader, Tile, Table, Th, Td, Code } from "@/components/ui";
+import { RangeWarning } from "@/components/range-warning";
+import { normalizeRange } from "@/lib/accounting/dates";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +14,8 @@ export default async function ArusKasPage({
   searchParams: Promise<{ start?: string; end?: string }>;
 }) {
   const sp = await searchParams;
-  const now = new Date();
-  const startDate = sp.start ?? `${now.getFullYear()}-01-01`;
-  const endDate = sp.end ?? now.toISOString().slice(0, 10);
+  const range = normalizeRange(sp.start, sp.end);
+  const { start: startDate, end: endDate, swapped } = range;
 
   const [accounts, lines] = await Promise.all([getAccounts(), getJournalLines()]);
   const r = buildArusKas(accounts, lines, startDate, endDate);
@@ -27,6 +28,8 @@ export default async function ArusKasPage({
         subtitle={`Metode tidak langsung · ${startDate} — ${endDate}`}
         breadcrumb={["Home", "Laporan", "Arus Kas"]}
       />
+
+      {swapped && <RangeWarning start={sp.start ?? ""} end={sp.end ?? ""} />}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Tile

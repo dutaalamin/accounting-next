@@ -3,6 +3,8 @@ import { getAccounts, getJournalLines } from "@/lib/queries";
 import { balanceUntil } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
 import { PageHeader, Card, CardHeader, Table, Th, Td, Button, inputCls, labelCls } from "@/components/ui";
+import { RangeWarning } from "@/components/range-warning";
+import { normalizeRange } from "@/lib/accounting/dates";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +14,8 @@ export default async function BukuBesarPage({
   searchParams: Promise<{ account?: string; start?: string; end?: string }>;
 }) {
   const sp = await searchParams;
-  const now = new Date();
-  const startDate = sp.start ?? `${now.getFullYear()}-01-01`;
-  const endDate = sp.end ?? now.toISOString().slice(0, 10);
+  const range = normalizeRange(sp.start, sp.end);
+  const { start: startDate, end: endDate, swapped } = range;
 
   const [accounts, lines] = await Promise.all([getAccounts(), getJournalLines()]);
   const selectedId = sp.account ? Number(sp.account) : null;
@@ -45,6 +46,8 @@ export default async function BukuBesarPage({
         subtitle="Pilih akun dan rentang tanggal untuk melihat mutasi & saldo berjalan"
         breadcrumb={["Home", "Laporan", "Buku Besar"]}
       />
+
+      {swapped && <RangeWarning start={sp.start ?? ""} end={sp.end ?? ""} />}
 
       <Card padded={false}>
         <CardHeader title="Filter" description="Akun & periode" icon={Filter} />

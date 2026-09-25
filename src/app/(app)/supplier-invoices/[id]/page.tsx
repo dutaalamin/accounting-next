@@ -2,6 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Printer } from "lucide-react";
 import { getSupplierInvoice } from "@/lib/queries";
+import { getSessionUser } from "@/lib/auth";
+import { CancelInvoiceButton } from "@/components/cancel-invoice-button";
+import { cancelSupplierInvoice } from "../../invoices/actions";
 import { formatRupiah } from "@/lib/format";
 import {
   PageHeader,
@@ -24,6 +27,7 @@ export default async function SupplierInvoiceDetail({
   const { id } = await params;
   const inv = await getSupplierInvoice(Number(id));
   if (!inv) notFound();
+  const user = await getSessionUser();
 
   const subtotal = inv.lines.reduce((s, l) => s + l.subtotal, 0);
 
@@ -130,6 +134,21 @@ export default async function SupplierInvoiceDetail({
         <Card>
           <p className="text-xs font-semibold uppercase tracking-wide text-sap-label">Catatan</p>
           <p className="mt-1 text-sm">{inv.notes}</p>
+        </Card>
+      )}
+
+      {user?.role === "admin" && (
+        <Card>
+          <p className="text-sm font-semibold text-sap-text">Koreksi</p>
+          <p className="mb-3 mt-1 text-xs text-sap-label">
+            Membatalkan tagihan akan membuat jurnal pembalik. Riwayat tetap tersimpan.
+          </p>
+          <CancelInvoiceButton
+            id={inv.id}
+            kind="supplier"
+            action={cancelSupplierInvoice}
+            label="Batalkan Tagihan"
+          />
         </Card>
       )}
     </>

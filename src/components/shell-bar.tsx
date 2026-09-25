@@ -18,6 +18,8 @@ import {
   Package,
   Receipt,
   FileText,
+  UsersRound,
+  UserCog,
   type LucideIcon,
 } from "lucide-react";
 import { logout } from "@/app/(auth)/login/actions";
@@ -26,6 +28,7 @@ interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
+  adminOnly?: boolean;
 }
 
 const NAV: { group: string; items: NavItem[] }[] = [
@@ -48,6 +51,13 @@ const NAV: { group: string; items: NavItem[] }[] = [
     ],
   },
   {
+    group: "Pengaturan",
+    items: [
+      { href: "/profile", label: "Profil Saya", icon: UserCog },
+      { href: "/users", label: "Kelola Pengguna", icon: UsersRound, adminOnly: true },
+    ],
+  },
+  {
     group: "Laporan",
     items: [
       { href: "/reports/arus-kas", label: "Arus Kas", icon: TrendingUp },
@@ -60,6 +70,10 @@ const NAV: { group: string; items: NavItem[] }[] = [
 
 export function Sidebar({ userName, role }: { userName: string; role: string }) {
   const pathname = usePathname();
+  const isAdminUser = role === "admin";
+  const sections = NAV
+    .map((s) => ({ ...s, items: s.items.filter((i) => !i.adminOnly || isAdminUser) }))
+    .filter((s) => s.items.length > 0);
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
 
@@ -77,7 +91,7 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-2">
-        {NAV.map((section) => (
+        {sections.map((section) => (
           <div key={section.group} className="mb-6">
             <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
               {section.group}

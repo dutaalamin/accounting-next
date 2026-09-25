@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { customers, products, vendors } from "@/db/schema";
-import { requireUser } from "@/lib/auth";
+import { requireUser, requireAdmin } from "@/lib/auth";
 import { round2 } from "@/lib/accounting/balance";
 
 export interface MasterState {
@@ -34,7 +34,12 @@ export async function createCustomer(
 }
 
 export async function deleteCustomer(id: number): Promise<MasterState> {
-  await requireUser();
+  // Menghapus master data = aksi sensitif -> hanya admin.
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
   await db.update(customers).set({ deletedAt: new Date() }).where(eq(customers.id, id));
   revalidatePath("/customers");
   return { success: "Pelanggan dihapus." };
@@ -62,7 +67,12 @@ export async function createVendor(
 }
 
 export async function deleteVendor(id: number): Promise<MasterState> {
-  await requireUser();
+  // Menghapus master data = aksi sensitif -> hanya admin.
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
   await db.update(vendors).set({ deletedAt: new Date() }).where(eq(vendors.id, id));
   revalidatePath("/vendors");
   return { success: "Pemasok dihapus." };
@@ -109,7 +119,12 @@ export async function createProduct(
 }
 
 export async function deleteProduct(id: number): Promise<MasterState> {
-  await requireUser();
+  // Menghapus master data = aksi sensitif -> hanya admin.
+  try {
+    await requireAdmin();
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Akses ditolak." };
+  }
   await db.update(products).set({ deletedAt: new Date() }).where(eq(products.id, id));
   revalidatePath("/products");
   return { success: "Produk dihapus." };
