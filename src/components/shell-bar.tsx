@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,6 +21,10 @@ import {
   FileText,
   UsersRound,
   UserCog,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Menu,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { logout } from "@/app/(auth)/login/actions";
@@ -68,88 +73,267 @@ const NAV: { group: string; items: NavItem[] }[] = [
   },
 ];
 
-export function Sidebar({ userName, role }: { userName: string; role: string }) {
+const STORAGE_KEY = "sidebar-collapsed";
+const TOGGLE_EVENT = "sidebar-collapsed-change";
+
+/**
+ * Sumber kebenaran status sidebar = localStorage.
+ * Dibaca lewat useSyncExternalStore supaya tidak ada setState di effect
+ * (yang memicu peringatan react-hooks) dan tidak ada hydration mismatch.
+ */
+const collapsedStore = {
+  subscribe(callback: () => void) {
+    window.addEventListener("storage", callback);
+    window.addEventListener(TOGGLE_EVENT, callback);
+    return () => {
+      window.removeEventListener("storage", callback);
+      window.removeEventListener(TOGGLE_EVENT, callback);
+    };
+  },
+  getSnapshot(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  },
+  getServerSnapshot(): boolean {
+    return false;
+  },
+  set(value: boolean) {
+    try {
+      localStorage.setItem(STORAGE_KEY, value ? "1" : "0");
+    } catch {
+      /* localStorage tidak tersedia — abaikan */
+    }
+    window.dispatchEvent(new Event(TOGGLE_EVENT));
+  },
+};
+
+function useCollapsed() {
+  const collapsed = useSyncExternalStore(
+    collapsedStore.subscribe,
+    collapsedStore.getSnapshot,
+    collapsedStore.getServerSnapshot,
+  );
+  const toggle = () => collapsedStore.set(!collapsed);
+  return { collapsed, toggle };
+}
+
+function NavLinks({
+  sections,
+  collapsed,
+  onNavigate,
+}: {
+  sections: { group: string; items: NavItem[] }[];
+  collapsed: boolean;
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
-  const isAdminUser = role === "admin";
-  const sections = NAV
-    .map((s) => ({ ...s, items: s.items.filter((i) => !i.adminOnly || isAdminUser) }))
-    .filter((s) => s.items.length > 0);
   const isActive = (href: string) =>
     href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
 
   return (
-    <aside className="flex w-[264px] shrink-0 flex-col bg-[#14161c]">
-      {/* Brand */}
-      <div className="flex h-[76px] items-center gap-3 px-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
-          A
-        </div>
-        <div className="leading-tight">
-          <p className="text-sm font-semibold text-white">Accounting</p>
-          <p className="text-[11px] text-white/40">Financial Suite</p>
-        </div>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto px-3 py-2">
-        {sections.map((section) => (
-          <div key={section.group} className="mb-6">
+    <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
+      {sections.map((section) => (
+        <div key={section.group} className="mb-6">
+          {collapsed ? (
+            // Saat ter-minimize, nama grup diganti garis pemisah.
+            <div className="mx-3 mb-3 border-t border-white/10" />
+          ) : (
             <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
               {section.group}
             </p>
-            <ul className="space-y-1">
-              {section.items.map((item) => {
-                const active = isActive(item.href);
-                const Icon = item.icon;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
-                        active
-                          ? "bg-white/[0.12] font-medium text-white shadow-sm"
-                          : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+          )}
+          <ul className="space-y-1">
+            {section.items.map((item) => {
+              const active = isActive(item.href);
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={onNavigate}
+                    title={collapsed ? item.label : undefined}
+                    className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
+                      active
+                        ? "bg-white/[0.12] font-medium text-white shadow-sm"
+                        : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                    } ${collapsed ? "justify-center" : ""}`}
+                  >
+                    <Icon
+                      size={18}
+                      strokeWidth={active ? 2.2 : 1.9}
+                      className={`shrink-0 ${
+                        active ? "text-white" : "text-white/45 group-hover:text-white/75"
                       }`}
-                    >
-                      <Icon
-                        size={18}
-                        strokeWidth={active ? 2.2 : 1.9}
-                        className={active ? "text-white" : "text-white/45 group-hover:text-white/75"}
-                      />
-                      {item.label}
-                      {active && (
-                        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-white/70" />
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
-      </nav>
+                    />
+                    {!collapsed && <span className="truncate">{item.label}</span>}
+                    {!collapsed && active && (
+                      <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  );
+}
 
-      {/* User */}
-      <div className="border-t border-white/10 p-3">
-        <div className="flex items-center gap-3 rounded-xl bg-white/[0.06] p-2.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xs font-semibold text-white">
-            {userName.slice(0, 1).toUpperCase()}
-          </span>
+function UserBox({
+  userName,
+  role,
+  collapsed,
+}: {
+  userName: string;
+  role: string;
+  collapsed: boolean;
+}) {
+  return (
+    <div className="border-t border-white/10 p-3">
+      <div
+        className={`flex items-center gap-3 rounded-xl bg-white/[0.06] p-2.5 ${
+          collapsed ? "flex-col" : ""
+        }`}
+      >
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xs font-semibold text-white"
+          title={collapsed ? `${userName} (${role})` : undefined}
+        >
+          {userName.slice(0, 1).toUpperCase()}
+        </span>
+        {!collapsed && (
           <div className="min-w-0 flex-1 leading-tight">
             <p className="truncate text-xs font-semibold text-white">{userName}</p>
             <p className="text-[10px] uppercase tracking-wide text-white/40">{role}</p>
           </div>
-          <form action={logout}>
-            <button
-              type="submit"
-              title="Keluar"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
-            >
-              <LogOut size={15} />
-            </button>
-          </form>
-        </div>
+        )}
+        <form action={logout}>
+          <button
+            type="submit"
+            title="Keluar"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
+          >
+            <LogOut size={15} />
+          </button>
+        </form>
       </div>
-    </aside>
+    </div>
+  );
+}
+
+export function Sidebar({ userName, role }: { userName: string; role: string }) {
+  const isAdminUser = role === "admin";
+  const sections = NAV.map((s) => ({
+    ...s,
+    items: s.items.filter((i) => !i.adminOnly || isAdminUser),
+  })).filter((s) => s.items.length > 0);
+
+  const { collapsed, toggle } = useCollapsed();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Sembunyikan saat klik di luar / ganti halaman sudah ditangani NavLinks.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
+  // Lebar sidebar: 264px normal, 76px saat ter-minimize.
+  const widthCls = collapsed ? "w-[76px]" : "w-[264px]";
+
+  return (
+    <>
+      {/* Sidebar desktop */}
+      <aside
+        className={`hidden shrink-0 flex-col bg-[#14161c] transition-[width] duration-200 lg:flex ${widthCls}`}
+      >
+        {/* Brand + tombol minimize */}
+        <div
+          className={`flex h-[76px] items-center border-b border-white/[0.06] ${
+            collapsed ? "justify-center px-2" : "gap-3 px-5"
+          }`}
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
+            A
+          </div>
+          {!collapsed && (
+            <div className="min-w-0 flex-1 leading-tight">
+              <p className="truncate text-sm font-semibold text-white">Accounting</p>
+              <p className="text-[11px] text-white/40">Financial Suite</p>
+            </div>
+          )}
+        </div>
+
+        <NavLinks sections={sections} collapsed={collapsed} />
+        <UserBox userName={userName} role={role} collapsed={collapsed} />
+
+        {/* Tombol minimize — di bawah, mudah dijangkau */}
+        <button
+          type="button"
+          onClick={toggle}
+          title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
+          aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
+          className={`flex h-11 items-center gap-3 border-t border-white/10 text-white/50 transition hover:bg-white/[0.06] hover:text-white ${
+            collapsed ? "justify-center px-2" : "px-5"
+          }`}
+        >
+          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          {!collapsed && <span className="text-xs font-medium">Minimize</span>}
+        </button>
+      </aside>
+
+      {/* Tombol buka sidebar (mobile) */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen(true)}
+        className="fixed bottom-4 left-4 z-40 flex h-11 w-11 items-center justify-center rounded-xl bg-[#14161c] text-white shadow-lg lg:hidden"
+        aria-label="Buka menu"
+      >
+        <Menu size={20} />
+      </button>
+
+      {/* Sidebar mobile (overlay) */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            aria-label="Tutup menu"
+            onClick={() => setMobileOpen(false)}
+            className="absolute inset-0 bg-black/50"
+          />
+          <div className="relative flex h-full w-[264px] flex-col bg-[#14161c]">
+            <div className="flex h-[76px] items-center justify-between px-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
+                  A
+                </div>
+                <div className="leading-tight">
+                  <p className="text-sm font-semibold text-white">Accounting</p>
+                  <p className="text-[11px] text-white/40">Financial Suite</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white"
+                aria-label="Tutup menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <NavLinks sections={sections} collapsed={false} onNavigate={() => setMobileOpen(false)} />
+            <UserBox userName={userName} role={role} collapsed={false} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -157,6 +341,13 @@ const TITLES: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/accounts": "Akun & Dompet",
   "/journals": "Transaksi",
+  "/customers": "Pelanggan",
+  "/customer-invoices": "Tagihan Pelanggan",
+  "/vendors": "Pemasok",
+  "/supplier-invoices": "Tagihan Pemasok",
+  "/products": "Produk & Layanan",
+  "/users": "Kelola Pengguna",
+  "/profile": "Profil Saya",
   "/reports/arus-kas": "Arus Kas",
   "/reports/buku-besar": "Buku Besar",
   "/reports/laba-rugi": "Laba Rugi",
