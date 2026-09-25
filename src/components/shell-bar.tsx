@@ -137,9 +137,9 @@ function NavLinks({
         <div key={section.group} className="mb-6">
           {collapsed ? (
             // Saat ter-minimize, nama grup diganti garis pemisah.
-            <div className="mx-3 mb-3 border-t border-white/10" />
+            <div className="mx-3 mb-3 border-t border-sap-border" />
           ) : (
-            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
+            <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-sap-label">
               {section.group}
             </p>
           )}
@@ -155,20 +155,20 @@ function NavLinks({
                     title={collapsed ? item.label : undefined}
                     className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
                       active
-                        ? "bg-white/[0.12] font-medium text-white shadow-sm"
-                        : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                        ? "bg-sap-blue-light font-medium text-sap-blue-dark"
+                        : "text-sap-label hover:bg-sap-hover hover:text-sap-text"
                     } ${collapsed ? "justify-center" : ""}`}
                   >
                     <Icon
                       size={18}
                       strokeWidth={active ? 2.2 : 1.9}
                       className={`shrink-0 ${
-                        active ? "text-white" : "text-white/45 group-hover:text-white/75"
+                        active ? "text-sap-blue" : "text-sap-label group-hover:text-sap-text"
                       }`}
                     />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                     {!collapsed && active && (
-                      <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
+                      <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-sap-blue" />
                     )}
                   </Link>
                 </li>
@@ -191,29 +191,29 @@ function UserBox({
   collapsed: boolean;
 }) {
   return (
-    <div className="border-t border-white/10 p-3">
+    <div className="border-t border-sap-border p-3">
       <div
-        className={`flex items-center gap-3 rounded-xl bg-white/[0.06] p-2.5 ${
+        className={`flex items-center gap-3 rounded-xl bg-sap-bg p-2.5 ${
           collapsed ? "flex-col" : ""
         }`}
       >
         <span
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xs font-semibold text-white"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-xs font-semibold text-white"
           title={collapsed ? `${userName} (${role})` : undefined}
         >
           {userName.slice(0, 1).toUpperCase()}
         </span>
         {!collapsed && (
           <div className="min-w-0 flex-1 leading-tight">
-            <p className="truncate text-xs font-semibold text-white">{userName}</p>
-            <p className="text-[10px] uppercase tracking-wide text-white/40">{role}</p>
+            <p className="truncate text-xs font-semibold text-sap-text">{userName}</p>
+            <p className="text-[10px] uppercase tracking-wide text-sap-label">{role}</p>
           </div>
         )}
         <form action={logout}>
           <button
             type="submit"
             title="Keluar"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-sap-label transition hover:bg-sap-negative-bg hover:text-sap-negative"
           >
             <LogOut size={15} />
           </button>
@@ -250,21 +250,21 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
     <>
       {/* Sidebar desktop */}
       <aside
-        className={`group/side relative hidden shrink-0 flex-col bg-[#14161c] transition-[width] duration-200 lg:flex ${widthCls}`}
+        className={`group/side relative hidden shrink-0 flex-col border-r border-sap-border bg-white transition-[width] duration-200 lg:flex ${widthCls}`}
       >
         {/* Brand */}
         <div
-          className={`flex h-[76px] items-center border-b border-white/[0.06] ${
+          className={`flex h-[76px] items-center border-b border-sap-border ${
             collapsed ? "justify-center px-2" : "gap-3 px-5"
           }`}
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
             A
           </div>
           {!collapsed && (
             <div className="min-w-0 flex-1 leading-tight">
-              <p className="truncate text-sm font-semibold text-white">Accounting</p>
-              <p className="text-[11px] text-white/40">Financial Suite</p>
+              <p className="truncate text-sm font-semibold text-sap-text">Accounting</p>
+              <p className="text-[11px] text-sap-label">Financial Suite</p>
             </div>
           )}
         </div>
@@ -278,7 +278,7 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
           onClick={toggle}
           title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
           aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg transition hover:scale-105 hover:bg-slate-50 hover:text-slate-900 active:scale-95"
+          className="absolute -right-4 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[#14161c] text-white shadow-lg ring-1 ring-white/20 transition hover:scale-105 hover:bg-[#252a34] active:scale-95"
         >
           {collapsed ? (
             <ChevronRight size={20} strokeWidth={2.5} />
@@ -307,7 +307,7 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
             onClick={() => setMobileOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
-          <div className="relative flex h-full w-[264px] flex-col bg-[#14161c]">
+          <div className="relative flex h-full w-[264px] flex-col bg-white">
             <div className="flex h-[76px] items-center justify-between px-5">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-bold text-white">
@@ -315,13 +315,13 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
                 </div>
                 <div className="leading-tight">
                   <p className="text-sm font-semibold text-white">Accounting</p>
-                  <p className="text-[11px] text-white/40">Financial Suite</p>
+                  <p className="text-[11px] text-sap-label">Financial Suite</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-sap-label hover:bg-sap-hover hover:text-sap-text"
                 aria-label="Tutup menu"
               >
                 <X size={18} />
