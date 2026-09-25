@@ -1,15 +1,8 @@
-import {
-  Wallet,
-  TrendingDown,
-  PiggyBank,
-  CheckCircle2,
-  AlertTriangle,
-  Scale,
-} from "lucide-react";
+import { Wallet, TrendingDown, PiggyBank, CheckCircle2, AlertTriangle } from "lucide-react";
 import { getAccounts, getJournalLines } from "@/lib/queries";
 import { buildNeraca } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
-import { PageHeader, Card, CardHeader, StatCard, Table, Th, Td } from "@/components/ui";
+import { PageHeader, Card, CardHeader, Tile, Table, Th, Td, Code } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -26,51 +19,44 @@ export default async function NeracaPage({
 
   return (
     <>
-      <PageHeader title="Neraca" subtitle={`Posisi keuangan per ${asOfDate}`} />
+      <PageHeader
+        title="Neraca"
+        subtitle={`Posisi keuangan per ${asOfDate}`}
+        breadcrumb={["Home", "Laporan", "Neraca"]}
+      />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="Total Aset" value={formatRupiah(r.totalAsset)} icon={Wallet} tone="indigo" />
-        <StatCard
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Tile label="Total Aset" value={formatRupiah(r.totalAsset)} icon={Wallet} tone="blue" />
+        <Tile
           label="Total Kewajiban"
           value={formatRupiah(r.totalLiability)}
           icon={TrendingDown}
-          tone="rose"
+          tone="negative"
         />
-        <StatCard
+        <Tile
           label="Total Modal + Laba"
           value={formatRupiah(r.totalEquity)}
           icon={PiggyBank}
-          tone="emerald"
+          tone="positive"
         />
       </div>
 
-      <Card
-        className={`flex items-center gap-3 ${
-          r.balanced ? "!border-emerald-200 !bg-emerald-50/60" : "!border-rose-200 !bg-rose-50/60"
-        }`}
-      >
+      <Card className="flex items-center gap-3">
         {r.balanced ? (
-          <CheckCircle2 size={20} className="text-emerald-600" />
+          <CheckCircle2 size={18} className="text-sap-positive" />
         ) : (
-          <AlertTriangle size={20} className="text-rose-600" />
+          <AlertTriangle size={18} className="text-sap-critical" />
         )}
-        <p
-          className={`text-sm font-semibold ${r.balanced ? "text-emerald-800" : "text-rose-800"}`}
-        >
+        <span className="text-sm font-medium">
           {r.balanced
             ? "Neraca seimbang — Aset = Kewajiban + Modal"
             : "Neraca belum seimbang, periksa kembali entri jurnal"}
-        </p>
+        </span>
       </Card>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card padded={false}>
-          <CardHeader
-            title="Aset"
-            description={`${r.assetAccounts.length} akun`}
-            icon={Wallet}
-            accent="text-indigo-500"
-          />
+          <CardHeader title="Aset" description={`${r.assetAccounts.length} akun`} icon={Wallet} />
           <Table>
             <thead>
               <tr>
@@ -83,25 +69,23 @@ export default async function NeracaPage({
             </thead>
             <tbody>
               {r.assetAccounts.map((a) => (
-                <tr key={a.id} className="transition hover:bg-slate-50/70">
+                <tr key={a.id} className="hover:bg-sap-hover">
                   <Td>
-                    <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-500">
-                      {a.code}
-                    </span>
+                    <Code>{a.code}</Code>
                   </Td>
-                  <Td className="text-slate-700">{a.name}</Td>
-                  <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                  <Td>{a.name}</Td>
+                  <Td align="right" className="font-semibold tabular-nums">
                     {formatRupiah(a.balance)}
                   </Td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-slate-50/80">
-                <Td colSpan={2} className="font-bold text-slate-900">
+              <tr className="bg-sap-header">
+                <Td colSpan={2} className="font-semibold">
                   Total Aset
                 </Td>
-                <Td align="right" className="font-bold tabular-nums text-slate-900">
+                <Td align="right" className="font-bold tabular-nums">
                   {formatRupiah(r.totalAsset)}
                 </Td>
               </tr>
@@ -113,8 +97,7 @@ export default async function NeracaPage({
           <CardHeader
             title="Kewajiban & Modal"
             description="Sisi kredit neraca"
-            icon={Scale}
-            accent="text-violet-500"
+            icon={PiggyBank}
           />
           <Table>
             <thead>
@@ -127,57 +110,53 @@ export default async function NeracaPage({
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-slate-50/50">
-                <Td colSpan={3} className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <tr className="bg-sap-header">
+                <Td colSpan={3} className="text-[11px] font-semibold uppercase tracking-wide text-sap-label">
                   Kewajiban
                 </Td>
               </tr>
               {r.liabilityAccounts.map((a) => (
-                <tr key={a.id} className="transition hover:bg-slate-50/70">
+                <tr key={a.id} className="hover:bg-sap-hover">
                   <Td>
-                    <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-500">
-                      {a.code}
-                    </span>
+                    <Code>{a.code}</Code>
                   </Td>
-                  <Td className="text-slate-700">{a.name}</Td>
-                  <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                  <Td>{a.name}</Td>
+                  <Td align="right" className="font-semibold tabular-nums">
                     {formatRupiah(a.balance)}
                   </Td>
                 </tr>
               ))}
 
-              <tr className="bg-slate-50/50">
-                <Td colSpan={3} className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <tr className="bg-sap-header">
+                <Td colSpan={3} className="text-[11px] font-semibold uppercase tracking-wide text-sap-label">
                   Modal
                 </Td>
               </tr>
               {r.equityAccounts.map((a) => (
-                <tr key={a.id} className="transition hover:bg-slate-50/70">
+                <tr key={a.id} className="hover:bg-sap-hover">
                   <Td>
-                    <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-500">
-                      {a.code}
-                    </span>
+                    <Code>{a.code}</Code>
                   </Td>
-                  <Td className="text-slate-700">{a.name}</Td>
-                  <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                  <Td>{a.name}</Td>
+                  <Td align="right" className="font-semibold tabular-nums">
                     {formatRupiah(a.balance)}
                   </Td>
                 </tr>
               ))}
-              <tr className="transition hover:bg-slate-50/70">
+              <tr className="hover:bg-sap-hover">
                 <Td />
-                <Td className="text-slate-700">Laba Berjalan (tahun ini)</Td>
-                <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                <Td>Laba Berjalan (tahun ini)</Td>
+                <Td align="right" className="font-semibold tabular-nums">
                   {formatRupiah(r.currentYearIncome)}
                 </Td>
               </tr>
             </tbody>
             <tfoot>
-              <tr className="bg-slate-50/80">
-                <Td colSpan={2} className="font-bold text-slate-900">
+              <tr className="bg-sap-header">
+                <Td colSpan={2} className="font-semibold">
                   Total Kewajiban + Modal
                 </Td>
-                <Td align="right" className="font-bold tabular-nums text-slate-900">
+                <Td align="right" className="font-bold tabular-nums">
                   {formatRupiah(r.totalLiabilityEquity)}
                 </Td>
               </tr>

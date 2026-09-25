@@ -2,12 +2,9 @@ import { BookOpen, Filter } from "lucide-react";
 import { getAccounts, getJournalLines } from "@/lib/queries";
 import { balanceUntil } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
-import { PageHeader, Card, CardHeader, Table, Th, Td } from "@/components/ui";
+import { PageHeader, Card, CardHeader, Table, Th, Td, Button, inputCls, labelCls } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
-
-const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50";
 
 export default async function BukuBesarPage({
   searchParams,
@@ -46,14 +43,15 @@ export default async function BukuBesarPage({
       <PageHeader
         title="Buku Besar"
         subtitle="Pilih akun dan rentang tanggal untuk melihat mutasi & saldo berjalan"
+        breadcrumb={["Home", "Laporan", "Buku Besar"]}
       />
 
       <Card padded={false}>
         <CardHeader title="Filter" description="Akun & periode" icon={Filter} />
-        <form className="p-5" method="get">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <form className="p-4" method="get">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-600">Pilih Akun</label>
+              <label className={labelCls}>Pilih Akun</label>
               <select name="account" defaultValue={sp.account ?? ""} className={inputCls}>
                 <option value="">— Pilih akun —</option>
                 {accounts.map((a) => (
@@ -64,32 +62,29 @@ export default async function BukuBesarPage({
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-600">Dari Tanggal</label>
+              <label className={labelCls}>Dari Tanggal</label>
               <input type="date" name="start" defaultValue={startDate} className={inputCls} />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-600">Sampai Tanggal</label>
+              <label className={labelCls}>Sampai Tanggal</label>
               <input type="date" name="end" defaultValue={endDate} className={inputCls} />
             </div>
           </div>
-          <button
-            type="submit"
-            className="mt-4 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-          >
-            Tampilkan
-          </button>
+          <div className="mt-4">
+            <Button type="submit" variant="emphasized">
+              Tampilkan
+            </Button>
+          </div>
         </form>
       </Card>
 
       {!account && (
-        <Card className="py-14">
+        <Card className="py-12">
           <div className="flex flex-col items-center text-center">
-            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
-              <BookOpen size={22} strokeWidth={1.8} />
-            </span>
-            <p className="text-sm font-medium text-slate-700">Pilih akun untuk memulai</p>
-            <p className="mt-1 max-w-sm text-xs text-slate-400">
-              Pilih akun dari dropdown di atas, lalu klik Tampilkan untuk melihat mutasi buku besar.
+            <BookOpen size={30} strokeWidth={1.5} className="mb-3 text-sap-border" />
+            <p className="text-sm font-medium">Pilih akun untuk memulai</p>
+            <p className="mt-1 max-w-sm text-xs text-sap-label">
+              Pilih akun dari dropdown di atas, lalu klik Tampilkan.
             </p>
           </div>
         </Card>
@@ -118,45 +113,45 @@ export default async function BukuBesarPage({
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-slate-50/60">
-                <Td className="font-medium text-slate-600">Saldo Awal</Td>
-                <Td align="right" className="text-slate-300">
+              <tr className="bg-sap-header">
+                <Td className="font-medium">Saldo Awal</Td>
+                <Td align="right" className="text-sap-border">
                   —
                 </Td>
-                <Td align="right" className="text-slate-300">
+                <Td align="right" className="text-sap-border">
                   —
                 </Td>
-                <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                <Td align="right" className="font-semibold tabular-nums">
                   {formatRupiah(opening)}
                 </Td>
               </tr>
               {rows.length === 0 && (
                 <tr>
-                  <Td colSpan={4} className="py-8 text-center text-slate-400 italic">
+                  <Td colSpan={4} className="py-8 text-center text-sap-label">
                     Tidak ada mutasi pada periode ini.
                   </Td>
                 </tr>
               )}
               {rows.map((r, i) => (
-                <tr key={i} className="transition hover:bg-slate-50/70">
-                  <Td className="text-slate-600">{r.date}</Td>
-                  <Td align="right" className="tabular-nums text-slate-800">
-                    {r.debit ? formatRupiah(r.debit) : <span className="text-slate-300">—</span>}
+                <tr key={i} className="hover:bg-sap-hover">
+                  <Td className="text-sap-label">{r.date}</Td>
+                  <Td align="right" className="tabular-nums">
+                    {r.debit ? formatRupiah(r.debit) : <span className="text-sap-border">—</span>}
                   </Td>
-                  <Td align="right" className="tabular-nums text-slate-800">
-                    {r.credit ? formatRupiah(r.credit) : <span className="text-slate-300">—</span>}
+                  <Td align="right" className="tabular-nums">
+                    {r.credit ? formatRupiah(r.credit) : <span className="text-sap-border">—</span>}
                   </Td>
-                  <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                  <Td align="right" className="font-semibold tabular-nums">
                     {formatRupiah(r.balance)}
                   </Td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-slate-50/80">
-                <Td className="font-bold text-slate-900">Saldo Akhir</Td>
+              <tr className="bg-sap-header">
+                <Td className="font-semibold">Saldo Akhir</Td>
                 <Td colSpan={2} />
-                <Td align="right" className="font-bold tabular-nums text-slate-900">
+                <Td align="right" className="font-bold tabular-nums">
                   {formatRupiah(rows.length > 0 ? rows[rows.length - 1].balance : opening)}
                 </Td>
               </tr>

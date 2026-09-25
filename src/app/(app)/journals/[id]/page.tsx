@@ -1,9 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Clock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { getJournalEntry } from "@/lib/queries";
 import { formatRupiah } from "@/lib/format";
-import { PageHeader, Card, CardHeader, Badge, Table, Th, Td } from "@/components/ui";
+import {
+  PageHeader,
+  Card,
+  CardHeader,
+  Table,
+  Th,
+  Td,
+  Code,
+  InfoLabel,
+  Button,
+} from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -21,29 +31,29 @@ export default async function JournalDetailPage({
 
   return (
     <>
-      <Link
-        href="/journals"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-800"
-      >
-        <ArrowLeft size={15} />
-        Kembali ke daftar jurnal
-      </Link>
-
       <PageHeader
-        title={entry.referenceNumber}
+        title={`Jurnal ${entry.referenceNumber}`}
         subtitle={`${entry.date} · ${entry.description ?? "Tanpa keterangan"}`}
+        breadcrumb={["Home", "Transaksi", entry.referenceNumber]}
         action={
-          <Badge tone={entry.isPosted ? "emerald" : "amber"}>
-            <span className="inline-flex items-center gap-1.5">
-              {entry.isPosted ? <CheckCircle2 size={13} /> : <Clock size={13} />}
-              {entry.isPosted ? "Posted" : "Draft"}
-            </span>
-          </Badge>
+          <Link href="/journals">
+            <Button variant="ghost" icon={ArrowLeft}>
+              Kembali
+            </Button>
+          </Link>
         }
       />
 
       <Card padded={false}>
-        <CardHeader title="Baris Jurnal" description={`${entry.lines.length} baris`} />
+        <CardHeader
+          title="Baris Jurnal"
+          description={`${entry.lines.length} baris`}
+          action={
+            <InfoLabel tone={entry.isPosted ? "positive" : "critical"}>
+              {entry.isPosted ? "Posted" : "Draft"}
+            </InfoLabel>
+          }
+        />
         <Table>
           <thead>
             <tr>
@@ -59,34 +69,32 @@ export default async function JournalDetailPage({
           </thead>
           <tbody>
             {entry.lines.map((l) => (
-              <tr key={l.id} className="transition hover:bg-slate-50/70">
+              <tr key={l.id} className="hover:bg-sap-hover">
                 <Td>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs font-medium text-slate-600">
-                      {l.accountCode}
-                    </span>
-                    <span className="font-medium text-slate-800">{l.accountName}</span>
+                    <Code>{l.accountCode}</Code>
+                    <span className="font-medium">{l.accountName}</span>
                   </div>
                 </Td>
-                <Td className="text-slate-500">{l.description ?? "—"}</Td>
-                <Td align="right" className="font-semibold tabular-nums text-slate-900">
-                  {l.debit ? formatRupiah(l.debit) : <span className="text-slate-300">—</span>}
+                <Td className="text-sap-label">{l.description ?? "—"}</Td>
+                <Td align="right" className="font-semibold tabular-nums">
+                  {l.debit ? formatRupiah(l.debit) : <span className="text-sap-border">—</span>}
                 </Td>
-                <Td align="right" className="font-semibold tabular-nums text-slate-900">
-                  {l.credit ? formatRupiah(l.credit) : <span className="text-slate-300">—</span>}
+                <Td align="right" className="font-semibold tabular-nums">
+                  {l.credit ? formatRupiah(l.credit) : <span className="text-sap-border">—</span>}
                 </Td>
               </tr>
             ))}
           </tbody>
           <tfoot>
-            <tr className="bg-slate-50/80">
-              <Td colSpan={2} className="font-semibold text-slate-700">
+            <tr className="bg-sap-header">
+              <Td colSpan={2} className="font-semibold">
                 Total
               </Td>
-              <Td align="right" className="font-bold tabular-nums text-slate-900">
+              <Td align="right" className="font-bold tabular-nums">
                 {formatRupiah(totalDebit)}
               </Td>
-              <Td align="right" className="font-bold tabular-nums text-slate-900">
+              <Td align="right" className="font-bold tabular-nums">
                 {formatRupiah(totalCredit)}
               </Td>
             </tr>

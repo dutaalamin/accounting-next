@@ -1,8 +1,17 @@
 import Link from "next/link";
-import { ArrowUpRight, Inbox, PenLine } from "lucide-react";
+import { Inbox, PenLine } from "lucide-react";
 import { getAccounts, getJournalEntries } from "@/lib/queries";
 import { formatRupiah } from "@/lib/format";
-import { PageHeader, Card, CardHeader, Badge, Table, Th, Td, EmptyState } from "@/components/ui";
+import {
+  PageHeader,
+  Card,
+  CardHeader,
+  Table,
+  Th,
+  Td,
+  InfoLabel,
+  EmptyState,
+} from "@/components/ui";
 import { JournalForm } from "./journal-form";
 
 export const dynamic = "force-dynamic";
@@ -14,8 +23,9 @@ export default async function JournalsPage() {
   return (
     <>
       <PageHeader
-        title="Transaksi Harian"
+        title="Catat Transaksi Harian"
         subtitle="Input jurnal umum (double-entry) — total debit harus sama dengan total kredit"
+        breadcrumb={["Home", "Transaksi"]}
       />
 
       <JournalForm accounts={accounts} />
@@ -25,14 +35,6 @@ export default async function JournalsPage() {
           title="Riwayat Jurnal"
           description={`${entries.length} jurnal tercatat`}
           icon={Inbox}
-          action={
-            <Link
-              href="/journals"
-              className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
-            >
-              Refresh <ArrowUpRight size={13} />
-            </Link>
-          }
         />
         <Table>
           <thead>
@@ -43,36 +45,44 @@ export default async function JournalsPage() {
               <Th align="center" className="w-20">
                 Baris
               </Th>
+              <Th align="center" className="w-28">
+                Status
+              </Th>
               <Th align="right" className="w-40">
                 Total
               </Th>
             </tr>
           </thead>
           <tbody>
-            {entries.length === 0 && (
+            {recent.length === 0 && (
               <EmptyState
                 icon={PenLine}
                 title="Belum ada jurnal"
-                description="Catat transaksi pertama kamu lewat form di atas."
-                colSpan={5}
+                description="Catat transaksi pertama lewat form di atas."
+                colSpan={6}
               />
             )}
             {recent.map((e) => (
-              <tr key={e.id} className="group transition hover:bg-slate-50/70">
-                <Td className="text-slate-500">{e.date}</Td>
+              <tr key={e.id} className="hover:bg-sap-hover">
+                <Td className="text-sap-label">{e.date}</Td>
                 <Td>
                   <Link
                     href={`/journals/${e.id}`}
-                    className="font-medium text-indigo-600 transition hover:text-indigo-700 hover:underline"
+                    className="font-medium text-sap-blue hover:underline"
                   >
                     {e.referenceNumber}
                   </Link>
                 </Td>
-                <Td className="text-slate-600">{e.description ?? "—"}</Td>
-                <Td align="center">
-                  <Badge tone="slate">{e.lineCount}</Badge>
+                <Td className="text-sap-label">{e.description ?? "—"}</Td>
+                <Td align="center" className="text-sap-label">
+                  {e.lineCount}
                 </Td>
-                <Td align="right" className="font-semibold tabular-nums text-slate-900">
+                <Td align="center">
+                  <InfoLabel tone={e.isPosted ? "positive" : "critical"}>
+                    {e.isPosted ? "Posted" : "Draft"}
+                  </InfoLabel>
+                </Td>
+                <Td align="right" className="font-semibold tabular-nums">
                   {formatRupiah(e.total)}
                 </Td>
               </tr>

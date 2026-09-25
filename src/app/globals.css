@@ -1,70 +1,43 @@
 @import "tailwindcss";
 
 /*
- * TEMA GELAP — gaya "Dark Minimal" (Linear / Vercel).
+ * TEMA SAP FIORI (Horizon light)
  *
- * Tailwind v4 mengekspos setiap warna sebagai CSS variable (--color-*),
- * dan utility seperti `bg-white` / `text-slate-900` memakai variable itu.
- * Jadi kita bisa membalik seluruh palet di satu tempat: kelas "terang"
- * otomatis menjadi gelap, tanpa menyentuh satu pun komponen.
+ * Token mengikuti warna resmi SAP Fiori:
+ *   shell #354a5f · background #f5f6f7 · card #ffffff
+ *   border #d9d9d9 / #e5e5e5 · teks #32363a · label #6a6d70
+ *   aksen biru #0a6ed1 (hover #0854a0)
+ *   semantik: positive #256f3a · negative #bb0000 · critical #e9730c
+ *
+ * Didefinisikan lewat @theme sehingga otomatis jadi utility Tailwind
+ * (bg-sap-shell, text-sap-label, border-sap-border, dst).
  */
 
-:root {
-  color-scheme: dark;
+@theme {
+  --color-sap-shell: #354a5f;
+  --color-sap-shell-hover: #2c3d4f;
+  --color-sap-bg: #f5f6f7;
+  --color-sap-card: #ffffff;
+  --color-sap-border: #d9d9d9;
+  --color-sap-border-light: #e5e5e5;
+  --color-sap-header: #f5f6f7;
+  --color-sap-hover: #f5f6f7;
+  --color-sap-text: #32363a;
+  --color-sap-label: #6a6d70;
+  --color-sap-blue: #0a6ed1;
+  --color-sap-blue-dark: #0854a0;
+  --color-sap-blue-light: #e8f1fa;
+  --color-sap-positive: #256f3a;
+  --color-sap-positive-bg: #f1fdf6;
+  --color-sap-negative: #bb0000;
+  --color-sap-negative-bg: #fff5f5;
+  --color-sap-critical: #e9730c;
+  --color-sap-critical-bg: #fff8f0;
+  --color-sap-neutral: #6a6d70;
+  --color-sap-neutral-bg: #f5f6f7;
 
-  /* Permukaan */
-  --color-white: #16181d; /* kartu */
-  --color-slate-50: #0b0c0f; /* latar halaman */
-  --color-slate-100: #1c1f25; /* chip / hover */
-  --color-slate-200: #262a31; /* garis */
-  --color-slate-300: #363b44;
-  --color-slate-400: #6b7280; /* teks redup */
-  --color-slate-500: #8b929c;
-  --color-slate-600: #a5abb4;
-  --color-slate-700: #c6cad0;
-  --color-slate-800: #e0e2e6;
-  --color-slate-900: #ededed; /* teks utama */
-  --color-slate-950: #fafafa;
-
-  /* Aksen — versi lebih terang supaya terbaca di latar gelap */
-  --color-indigo-50: #1b1b3a;
-  --color-indigo-100: #262654;
-  --color-indigo-400: #8b8bf5;
-  --color-indigo-500: #7c7cf0;
-  --color-indigo-600: #a5a5f7;
-  --color-indigo-700: #c0c0fa;
-
-  --color-emerald-50: #0d2a20;
-  --color-emerald-100: #123a2c;
-  --color-emerald-200: #1b5140;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #34d399;
-  --color-emerald-700: #6ee7b7;
-  --color-emerald-800: #a7f3d0;
-
-  --color-rose-50: #2d1119;
-  --color-rose-100: #3d1622;
-  --color-rose-200: #5c1f30;
-  --color-rose-400: #fb7185;
-  --color-rose-500: #f43f5e;
-  --color-rose-600: #fb7185;
-  --color-rose-700: #fda4af;
-  --color-rose-800: #fecdd3;
-
-  --color-amber-50: #2b1e0a;
-  --color-amber-100: #3a290e;
-  --color-amber-200: #553c14;
-  --color-amber-400: #fbbf24;
-  --color-amber-500: #f59e0b;
-  --color-amber-600: #fbbf24;
-  --color-amber-700: #fcd34d;
-  --color-amber-800: #fde68a;
-}
-
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "72", "72full", -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
 }
 
 html {
@@ -73,29 +46,30 @@ html {
 }
 
 body {
-  background: var(--color-slate-50);
-  color: var(--color-slate-900);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--color-sap-bg);
+  color: var(--color-sap-text);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
 }
 
-/* Angka keuangan sejajar */
+/* Angka keuangan sejajar (SAP pakai angka rata kanan) */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbar gelap */
+/* Scrollbar tipis gaya SAP */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0c0f;
+  background: #f5f6f7;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2e36;
+  background: #c4c9cf;
   border-radius: 9999px;
-  border: 2px solid #0b0c0f;
+  border: 2px solid #f5f6f7;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3f49;
+  background: #a8aeb5;
 }

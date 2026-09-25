@@ -1,11 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { AlertCircle, ArrowRight } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { login, type LoginState } from "./actions";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50";
+  "h-9 w-full rounded border border-[#89919a] bg-white px-2.5 text-[13px] text-sap-text outline-none transition placeholder:text-sap-label focus:border-sap-blue focus:ring-1 focus:ring-sap-blue";
+const labelCls = "mb-1 block text-xs font-medium text-sap-label";
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState<LoginState, FormData>(login, {});
@@ -13,14 +14,14 @@ export function LoginForm() {
   return (
     <form action={formAction} className="space-y-4">
       {state.error && (
-        <div className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700">
-          <AlertCircle size={16} />
+        <div className="flex items-center gap-2 rounded border border-sap-negative/30 bg-sap-negative-bg px-3 py-2 text-[13px] text-sap-negative">
+          <AlertCircle size={15} />
           {state.error}
         </div>
       )}
 
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-slate-600">
+        <label htmlFor="email" className={labelCls}>
           Email
         </label>
         <input
@@ -35,7 +36,7 @@ export function LoginForm() {
       </div>
 
       <div>
-        <label htmlFor="password" className="mb-1.5 block text-xs font-medium text-slate-600">
+        <label htmlFor="password" className={labelCls}>
           Password
         </label>
         <input
@@ -51,12 +52,9 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="group flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-60"
+        className="h-9 w-full rounded bg-sap-blue text-[13px] font-medium text-white transition-colors hover:bg-sap-blue-dark disabled:opacity-60"
       >
         {pending ? "Memproses…" : "Masuk"}
-        {!pending && (
-          <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-        )}
       </button>
     </form>
   );

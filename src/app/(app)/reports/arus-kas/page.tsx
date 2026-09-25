@@ -1,8 +1,8 @@
-import { TrendingUp, TrendingDown, Wallet, CalendarDays } from "lucide-react";
+import { Wallet, TrendingUp, TrendingDown, CalendarDays } from "lucide-react";
 import { getAccounts, getJournalLines } from "@/lib/queries";
 import { buildArusKas, type CashFlowDetail } from "@/lib/accounting/reports";
 import { formatRupiah } from "@/lib/format";
-import { PageHeader, Card, CardHeader, StatCard, Table, Th, Td } from "@/components/ui";
+import { PageHeader, Card, CardHeader, Tile, Table, Th, Td, Code } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,6 @@ export default async function ArusKasPage({
 
   const [accounts, lines] = await Promise.all([getAccounts(), getJournalLines()]);
   const r = buildArusKas(accounts, lines, startDate, endDate);
-
   const surplus = r.netChange >= 0;
 
   return (
@@ -26,62 +25,59 @@ export default async function ArusKasPage({
       <PageHeader
         title="Arus Kas"
         subtitle={`Metode tidak langsung · ${startDate} — ${endDate}`}
+        breadcrumb={["Home", "Laporan", "Arus Kas"]}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Tile
           label="Saldo Kas Awal"
           value={formatRupiah(r.openingCash)}
           icon={Wallet}
-          tone="slate"
+          tone="neutral"
+          accentBar
         />
-        <StatCard
+        <Tile
           label="Perubahan Kas Bersih"
           value={formatRupiah(r.netChange)}
           icon={surplus ? TrendingUp : TrendingDown}
-          tone={surplus ? "emerald" : "rose"}
+          tone={surplus ? "positive" : "negative"}
+          accentBar
         />
-        <StatCard
+        <Tile
           label="Saldo Kas Akhir"
           value={formatRupiah(r.closingCash)}
           icon={Wallet}
-          tone="indigo"
+          tone="blue"
+          accentBar
         />
       </div>
 
-      <Card
-        className={`flex items-center gap-3 ${
-          surplus ? "!border-emerald-200 !bg-emerald-50/60" : "!border-rose-200 !bg-rose-50/60"
-        }`}
-      >
+      <Card className="flex items-center gap-3">
         {surplus ? (
-          <TrendingUp size={20} className="text-emerald-600" />
+          <TrendingUp size={18} className="text-sap-positive" />
         ) : (
-          <TrendingDown size={20} className="text-rose-600" />
+          <TrendingDown size={18} className="text-sap-negative" />
         )}
-        <p className={`text-sm font-semibold ${surplus ? "text-emerald-800" : "text-rose-800"}`}>
+        <span className="text-sm font-medium">
           Status kas periode ini: {surplus ? "Surplus" : "Defisit"} sebesar{" "}
           {formatRupiah(Math.abs(r.netChange))}
-        </p>
+        </span>
       </Card>
 
       <ActivityTable
         title="Aktivitas Operasi"
-        accent="text-emerald-600"
         details={r.operatingDetails}
         total={r.operatingFlow}
         emptyText="Tidak ada aktivitas operasi pada periode ini."
       />
       <ActivityTable
         title="Aktivitas Investasi"
-        accent="text-amber-600"
         details={r.investingDetails}
         total={r.investingFlow}
         emptyText="Tidak ada aktivitas investasi pada periode ini."
       />
       <ActivityTable
         title="Aktivitas Pendanaan"
-        accent="text-violet-600"
         details={r.financingDetails}
         total={r.financingFlow}
         emptyText="Tidak ada aktivitas pendanaan pada periode ini."
@@ -93,14 +89,14 @@ export default async function ArusKasPage({
           description="Dari saldo awal menjadi saldo akhir"
           icon={CalendarDays}
         />
-        <div className="p-5">
+        <div className="p-4">
           <ReconRow label={`Saldo Kas Awal (per ${startDate})`} value={r.openingCash} />
           <ReconRow label="Total Kenaikan / Penurunan Kas Bersih" value={r.netChange} />
-          <div className="mt-3 flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-3">
-            <span className="text-sm font-bold text-indigo-700">
+          <div className="mt-3 flex items-center justify-between rounded border border-sap-blue/30 bg-sap-blue-light px-3 py-2.5">
+            <span className="text-sm font-semibold text-sap-blue-dark">
               Saldo Kas Akhir (per {endDate})
             </span>
-            <span className="text-base font-bold tabular-nums text-indigo-700">
+            <span className="text-base font-bold tabular-nums text-sap-blue-dark">
               {formatRupiah(r.closingCash)}
             </span>
           </div>
@@ -112,20 +108,18 @@ export default async function ArusKasPage({
 
 function ActivityTable({
   title,
-  accent,
   details,
   total,
   emptyText,
 }: {
   title: string;
-  accent: string;
   details: CashFlowDetail[];
   total: number;
   emptyText: string;
 }) {
   return (
     <Card padded={false}>
-      <CardHeader title={title} description={`${details.length} akun`} accent={accent} />
+      <CardHeader title={title} description={`${details.length} akun`} />
       <Table>
         <thead>
           <tr>
@@ -139,23 +133,21 @@ function ActivityTable({
         <tbody>
           {details.length === 0 && (
             <tr>
-              <Td colSpan={3} className="py-8 text-center text-slate-400 italic">
+              <Td colSpan={3} className="py-8 text-center text-sap-label">
                 {emptyText}
               </Td>
             </tr>
           )}
           {details.map((d) => (
-            <tr key={d.code} className="transition hover:bg-slate-50/70">
+            <tr key={d.code} className="hover:bg-sap-hover">
               <Td>
-                <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs text-slate-500">
-                  {d.code}
-                </span>
+                <Code>{d.code}</Code>
               </Td>
-              <Td className="text-slate-700">{d.name}</Td>
+              <Td>{d.name}</Td>
               <Td
                 align="right"
                 className={`font-semibold tabular-nums ${
-                  d.amount >= 0 ? "text-emerald-600" : "text-rose-600"
+                  d.amount >= 0 ? "text-sap-positive" : "text-sap-negative"
                 }`}
               >
                 {formatRupiah(d.amount)}
@@ -164,11 +156,11 @@ function ActivityTable({
           ))}
         </tbody>
         <tfoot>
-          <tr className="bg-slate-50/80">
-            <Td colSpan={2} className="font-bold text-slate-900">
+          <tr className="bg-sap-header">
+            <Td colSpan={2} className="font-semibold">
               Arus Kas Bersih
             </Td>
-            <Td align="right" className="font-bold tabular-nums text-slate-900">
+            <Td align="right" className="font-bold tabular-nums">
               {formatRupiah(total)}
             </Td>
           </tr>
@@ -180,11 +172,9 @@ function ActivityTable({
 
 function ReconRow({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex items-center justify-between border-b border-slate-50 py-3">
-      <span className="text-sm text-slate-600">{label}</span>
-      <span className="text-sm font-semibold tabular-nums text-slate-900">
-        {formatRupiah(value)}
-      </span>
+    <div className="flex items-center justify-between border-b border-sap-border-light py-2.5">
+      <span className="text-sm text-sap-label">{label}</span>
+      <span className="text-sm font-semibold tabular-nums">{formatRupiah(value)}</span>
     </div>
   );
 }
