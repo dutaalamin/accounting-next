@@ -167,9 +167,6 @@ function NavLinks({
                       }`}
                     />
                     {!collapsed && <span className="truncate">{item.label}</span>}
-                    {!collapsed && active && (
-                      <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-sap-blue" />
-                    )}
                   </Link>
                 </li>
               );
