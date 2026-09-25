@@ -252,9 +252,9 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
     <>
       {/* Sidebar desktop */}
       <aside
-        className={`hidden shrink-0 flex-col bg-[#14161c] transition-[width] duration-200 lg:flex ${widthCls}`}
+        className={`group/side relative hidden shrink-0 flex-col bg-[#14161c] transition-[width] duration-200 lg:flex ${widthCls}`}
       >
-        {/* Brand + tombol minimize */}
+        {/* Brand */}
         <div
           className={`flex h-[76px] items-center border-b border-white/[0.06] ${
             collapsed ? "justify-center px-2" : "gap-3 px-5"
@@ -274,18 +274,15 @@ export function Sidebar({ userName, role }: { userName: string; role: string }) 
         <NavLinks sections={sections} collapsed={collapsed} />
         <UserBox userName={userName} role={role} collapsed={collapsed} />
 
-        {/* Tombol minimize — di bawah, mudah dijangkau */}
+        {/* Tombol minimize — bulat, di tepi kanan & tengah tinggi sidebar */}
         <button
           type="button"
           onClick={toggle}
           title={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
           aria-label={collapsed ? "Perluas sidebar" : "Minimize sidebar"}
-          className={`flex h-11 items-center gap-3 border-t border-white/10 text-white/50 transition hover:bg-white/[0.06] hover:text-white ${
-            collapsed ? "justify-center px-2" : "px-5"
-          }`}
+          className="absolute -right-3 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-[#2a2e38] bg-[#1c1f27] text-white/70 shadow-md transition hover:border-white/20 hover:bg-[#252a34] hover:text-white"
         >
-          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-          {!collapsed && <span className="text-xs font-medium">Minimize</span>}
+          {collapsed ? <PanelLeftOpen size={13} /> : <PanelLeftClose size={13} />}
         </button>
       </aside>
 
