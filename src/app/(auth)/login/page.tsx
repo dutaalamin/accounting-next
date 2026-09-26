@@ -16,14 +16,16 @@ export default async function LoginPage() {
       <div className="relative w-full max-w-[400px]">
         {/* Logo & judul */}
         <div className="mb-7 flex flex-col items-center text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/25">
-            A
-          </span>
+          <img
+            src="/logo.svg"
+            alt="PT Cahaya Tiga Putri Mandiri"
+            className="h-14 w-14 rounded-2xl shadow-lg shadow-indigo-500/25"
+          />
           <h1 className="mt-5 text-2xl font-semibold tracking-tight text-sap-text">
-            Masuk ke Accounting
+            PT Cahaya Tiga Putri Mandiri
           </h1>
           <p className="mt-1.5 text-sm text-sap-label">
-            Gunakan akun Anda untuk melanjutkan
+            Masuk untuk melanjutkan
           </p>
         </div>
 
@@ -38,7 +40,7 @@ export default async function LoginPage() {
           <span>Koneksi terenkripsi · Data keuangan Anda aman</span>
         </div>
 
-        <p className="mt-6 text-center text-xs text-sap-label">© 2026 Accounting</p>
+        <p className="mt-6 text-center text-xs text-sap-label">© 2026 PT Cahaya Tiga Putri Mandiri</p>
       </div>
     </div>
   );

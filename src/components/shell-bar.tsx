@@ -271,10 +271,8 @@ export function AppShell({
           <Menu size={18} />
         </button>
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-xs font-bold text-white">
-            A
-          </span>
-          <span className="text-sm font-semibold text-sap-text">Accounting</span>
+          <img src="/logo.svg" alt="CTPM" className="h-7 w-7 rounded-lg" />
+          <span className="text-sm font-semibold text-sap-text">Cahaya Tiga Putri</span>
         </div>
       </header>
 
@@ -288,12 +286,12 @@ export function AppShell({
               collapsed ? "justify-center px-2" : "gap-3 px-5"
             }`}
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
-              A
-            </div>
+            <img src="/logo.svg" alt="CTPM" className="h-10 w-10 shrink-0 rounded-xl" />
             {!collapsed && (
-              <div className="min-w-0 flex-1 leading-tight">
-                <p className="truncate text-sm font-semibold text-sap-text">Accounting</p>
+              <div className="min-w-0 flex-1 leading-snug">
+                <p className="text-[13px] font-semibold text-sap-text">
+                  PT Cahaya Tiga Putri Mandiri
+                </p>
                 <p className="text-[11px] text-sap-label">Financial Suite</p>
               </div>
             )}
@@ -337,11 +335,11 @@ export function AppShell({
           <div className="relative flex h-full w-[264px] max-w-[80vw] flex-col bg-white shadow-xl">
             <div className="flex h-14 items-center justify-between px-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
-                  A
-                </div>
-                <div className="leading-tight">
-                  <p className="text-sm font-semibold text-sap-text">Accounting</p>
+                <img src="/logo.svg" alt="CTPM" className="h-9 w-9 rounded-lg" />
+                <div className="leading-snug">
+                  <p className="text-[13px] font-semibold text-sap-text">
+                    PT Cahaya Tiga Putri Mandiri
+                  </p>
                   <p className="text-[11px] text-sap-label">Financial Suite</p>
                 </div>
               </div>

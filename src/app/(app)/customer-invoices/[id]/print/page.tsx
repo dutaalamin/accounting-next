@@ -26,7 +26,7 @@ export default async function PrintCustomerInvoice({
           <p className="mt-1 text-sm text-slate-600">{inv.invoiceNumber}</p>
         </div>
         <div className="text-right text-sm">
-          <p className="font-semibold text-slate-900">Accounting</p>
+          <p className="font-semibold text-slate-900">PT Cahaya Tiga Putri Mandiri</p>
           <p className="text-slate-600">Tanggal: {inv.invoiceDate}</p>
           {inv.dueDate && <p className="text-slate-600">Jatuh tempo: {inv.dueDate}</p>}
           <p className="mt-1 font-semibold text-slate-900">

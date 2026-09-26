@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Accounting",
-  description: "Aplikasi akuntansi (Next.js)",
+  title: "PT Cahaya Tiga Putri Mandiri",
+  description: "Aplikasi akuntansi PT Cahaya Tiga Putri Mandiri",
+  icons: { icon: "/logo.svg" },
 };
 
 export default function RootLayout({
