@@ -16,12 +16,7 @@ export default async function LoginPage() {
       <div className="relative w-full max-w-[400px]">
         {/* Logo & judul */}
         <div className="mb-7 flex flex-col items-center text-center">
-          <img
-            src="/logo.svg"
-            alt="PT Cahaya Tiga Putri Mandiri"
-            className="h-14 w-14 rounded-2xl shadow-lg shadow-indigo-500/25"
-          />
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-sap-text">
+          <h1 className="text-2xl font-semibold tracking-tight text-sap-text">
             PT Cahaya Tiga Putri Mandiri
           </h1>
           <p className="mt-1.5 text-sm text-sap-label">

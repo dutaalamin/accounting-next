@@ -15,7 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PT Cahaya Tiga Putri Mandiri",
   description: "Aplikasi akuntansi PT Cahaya Tiga Putri Mandiri",
-  icons: { icon: "/logo.svg" },
 };
 
 export default function RootLayout({
