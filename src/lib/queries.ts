@@ -317,7 +317,6 @@ export interface InvoiceDetail {
   invoiceDate: string;
   dueDate: string | null;
   partyName: string;
-  partyPhone: string | null;
   taxPercentage: number;
   taxAmount: number;
   totalAmount: number;
@@ -341,7 +340,6 @@ export async function getCustomerInvoice(id: number): Promise<InvoiceDetail | nu
       invoiceDate: customerInvoices.invoiceDate,
       dueDate: customerInvoices.dueDate,
       partyName: customers.name,
-      partyPhone: customers.phone,
       taxPercentage: customerInvoices.taxPercentage,
       taxAmount: customerInvoices.taxAmount,
       totalAmount: customerInvoices.totalAmount,
@@ -380,7 +378,6 @@ export async function getSupplierInvoice(id: number): Promise<InvoiceDetail | nu
       invoiceDate: supplierInvoices.invoiceDate,
       dueDate: supplierInvoices.dueDate,
       partyName: vendors.name,
-      partyPhone: vendors.phone,
       taxPercentage: supplierInvoices.taxPercentage,
       taxAmount: supplierInvoices.taxAmount,
       totalAmount: supplierInvoices.totalAmount,
@@ -423,7 +420,6 @@ function mapDetail(
     totalAmount: string;
     status: string;
     notes: string | null;
-    partyPhone?: string | null;
   },
   lines: {
     id: number;
@@ -443,7 +439,6 @@ function mapDetail(
     invoiceDate: asDate(inv.invoiceDate)!,
     dueDate: asDate(inv.dueDate),
     partyName: inv.partyName,
-    partyPhone: inv.partyPhone ?? null,
     taxPercentage: Number(inv.taxPercentage),
     taxAmount: Number(inv.taxAmount),
     totalAmount: Number(inv.totalAmount),

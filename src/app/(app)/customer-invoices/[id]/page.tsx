@@ -4,7 +4,6 @@ import { ArrowLeft, Printer } from "lucide-react";
 import { getCustomerInvoice } from "@/lib/queries";
 import { getSessionUser } from "@/lib/auth";
 import { CancelInvoiceButton } from "@/components/cancel-invoice-button";
-import { WhatsappInvoiceButton } from "@/components/whatsapp-invoice-button";
 import { cancelCustomerInvoice } from "../../invoices/actions";
 import { formatRupiah } from "@/lib/format";
 import {
@@ -45,17 +44,6 @@ export default async function CustomerInvoiceDetail({
                 Kembali
               </Button>
             </Link>
-            <WhatsappInvoiceButton
-              invoiceNumber={inv.invoiceNumber}
-              partyName={inv.partyName}
-              partyPhone={inv.partyPhone}
-              invoiceDate={inv.invoiceDate}
-              dueDate={inv.dueDate}
-              totalAmount={inv.totalAmount}
-              status={inv.status}
-              lines={inv.lines}
-              companyName="PT Cahaya Tiga Putri Mandiri"
-            />
             <Link href={`/customer-invoices/${inv.id}/print`} target="_blank">
               <Button variant="default" icon={Printer}>
                 Cetak
